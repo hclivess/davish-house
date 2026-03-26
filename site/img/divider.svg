@@ -1,8 +1,8 @@
-<svg viewBox="0 0 1000 40" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-  <!-- Line A: top-left → crosses down → bottom-right -->
-  <path d="M0,12 L460,12 C480,12 490,12 500,20 C510,28 520,28 540,28 L1000,28"
-        fill="none" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
-  <!-- Line B: bottom-left → crosses up → top-right -->
-  <path d="M0,28 L460,28 C480,28 490,28 500,20 C510,12 520,12 540,12 L1000,12"
-        fill="none" stroke="#c9a84c" stroke-width="2.5" stroke-linecap="round"/>
+<svg viewBox="0 0 1000 16" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+  <!-- Top line: straight → pinch down → straight -->
+  <path d="M0,4 L470,4 L500,14 L530,4 L1000,4"
+        fill="none" stroke="#c9a84c" stroke-width="1.8" stroke-linejoin="round"/>
+  <!-- Bottom line: straight → pinch up → straight -->
+  <path d="M0,12 L470,12 L500,2 L530,12 L1000,12"
+        fill="none" stroke="#c9a84c" stroke-width="1.8" stroke-linejoin="round"/>
 </svg>
