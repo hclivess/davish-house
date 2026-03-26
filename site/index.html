@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XEPZ5WNSWY"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XEPZ5WNSWY');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Davish House Apartments | Departamentos Amueblados en Merida, Yucatan | Renta Sin Deposito</title>
@@ -398,6 +406,30 @@
             font-size: 1.3rem;
         }
 
+        /* Catalog button */
+        .btn-catalog {
+            background: transparent;
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            padding: 12px 28px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-catalog:hover {
+            background: var(--gold);
+            color: #111;
+            transform: scale(1.05);
+        }
+        .btn-catalog i {
+            font-size: 1.3rem;
+        }
+
         /* Card WhatsApp button */
         .btn-whatsapp-sm {
             background-color: #25D366;
@@ -468,6 +500,39 @@
         .feature-item p {
             color: #999;
             font-size: 0.95rem;
+        }
+
+        /* Policies section */
+        .policies-section {
+            background: var(--dark-bg);
+            padding: 50px 0;
+        }
+        .policy-card {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            height: 100%;
+        }
+        .policy-card i.policy-icon {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 14px;
+            display: block;
+        }
+        .policy-card h5 {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .policy-card p, .policy-card li {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .policy-card ul {
+            padding-left: 18px;
+            margin: 0;
         }
 
         /* Location section */
@@ -609,6 +674,9 @@
             .hero .badge-features {
                 text-align: center;
             }
+            .hero .d-flex {
+                justify-content: center !important;
+            }
             .hero h1 {
                 font-size: 2rem;
                 letter-spacing: 1px;
@@ -690,9 +758,12 @@
                     <span><i class="bi bi-tv"></i> <span data-i18n="badge_netflix">Netflix Incluido</span></span>
                     <span><i class="bi bi-wifi"></i> WiFi</span>
                 </div>
-                <div class="mt-4">
+                <div class="mt-4 d-flex flex-wrap gap-2 justify-content-end">
                     <a href="#" target="_blank" class="btn-whatsapp" data-wa="general">
                         <i class="bi bi-whatsapp"></i> <span data-i18n="hero_cta">Reserva por WhatsApp</span>
+                    </a>
+                    <a href="https://wa.me/c/5219993982548" target="_blank" class="btn-catalog">
+                        <i class="bi bi-collection"></i> <span data-i18n="catalog_btn">Ver Catalogo</span>
                     </a>
                 </div>
             </div>
@@ -709,7 +780,7 @@
                 <div class="col-lg-8">
                     <h2>Alejandro Davish</h2>
                     <div class="owner-role" data-i18n="owner_role">Fundador &amp; Propietario</div>
-                    <p data-i18n="owner_bio">Bienvenido a Davish House Apartments. Me dedico a ofrecer departamentos de calidad, completamente amueblados y equipados, para que te sientas como en casa desde el primer dia. Sin deposito, sin aval, sin complicaciones &mdash; asi de simple. Cada departamento cuenta con Smart TV con Netflix, WiFi, y todo lo que necesitas para una estancia comoda.</p>
+                    <p data-i18n="owner_bio">Somos una empresa comprometida en brindar servicios excepcionales de alojamiento en Merida, Yucatan. Ofrecemos departamentos de calidad, completamente amueblados y equipados, para que te sientas como en casa desde el primer dia. Sin deposito, sin aval, sin complicaciones. Nuestro equipo de profesionales atentos y amigables se preocupa por tu comodidad y satisfaccion. Cada departamento cuenta con Smart TV con Netflix, WiFi, y todo lo que necesitas para una estancia comoda.</p>
                     <a href="#" target="_blank" class="btn-whatsapp mt-3" data-wa="owner">
                         <i class="bi bi-whatsapp"></i> <span data-i18n="owner_cta">Habla conmigo directo</span>
                     </a>
@@ -723,7 +794,8 @@
         <div class="section-title">
             <h2 data-i18n="section_apartments">Nuestros Departamentos</h2>
             <p data-i18n="section_apartments_sub">Elige el que mejor se adapte a tus necesidades</p>
-            <p class="currency-hint" data-i18n="currency_note">Precios en pesos mexicanos (MXN)</p>
+            <p style="color:#aaa;max-width:700px;margin:0 auto 10px;font-size:1rem;line-height:1.6;" data-i18n="apartments_intro">Nuestros apartamentos son ideales para personas de negocios, viajeros o para aquellos que estan de paso por la ciudad y buscan un lugar para descansar. Tambien son perfectos para parejas que buscan una escapada tranquila.</p>
+            <p class="currency-hint" data-i18n="currency_note">Precios en pesos mexicanos (MXN) &mdash; <span data-i18n="extra_person">Persona extra: $100 MXN por dia o 4 horas</span></p>
         </div>
         <div class="container pb-5">
             <div class="row g-4" id="apartments-grid">
@@ -1025,30 +1097,65 @@
             <div class="row">
                 <div class="col-md-3 col-6">
                     <div class="feature-item">
-                        <i class="bi bi-shield-check"></i>
-                        <h5 data-i18n="benefit_deposit_title">Sin Deposito</h5>
-                        <p data-i18n="benefit_deposit_desc">No necesitas dejar deposito para mudarte</p>
+                        <i class="bi bi-person-heart"></i>
+                        <h5 data-i18n="benefit_deposit_title">Atencion Personalizada</h5>
+                        <p data-i18n="benefit_deposit_desc">Nos preocupamos por cada detalle y nos esforzamos por cumplir tus necesidades durante tu estadia</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="feature-item">
-                        <i class="bi bi-person-check"></i>
-                        <h5 data-i18n="benefit_guarantor_title">Sin Aval</h5>
-                        <p data-i18n="benefit_guarantor_desc">No pedimos aval ni referencias</p>
+                        <i class="bi bi-geo-alt"></i>
+                        <h5 data-i18n="benefit_guarantor_title">Ubicaciones Privilegiadas</h5>
+                        <p data-i18n="benefit_guarantor_desc">Nuestros apartamentos se encuentran en lugares estrategicos con acceso facil a las principales atracciones</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="feature-item">
                         <i class="bi bi-tv"></i>
-                        <h5>Netflix</h5>
-                        <p data-i18n="benefit_netflix_desc">Smart TV con Netflix incluido en cada depa</p>
+                        <h5 data-i18n="benefit_netflix_title">Comodidades Modernas</h5>
+                        <p data-i18n="benefit_netflix_desc">Cada alojamiento cuenta con todas las comodidades modernas: Smart TV, Netflix, WiFi, AC</p>
                     </div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="feature-item">
-                        <i class="bi bi-house-check"></i>
-                        <h5 data-i18n="benefit_furnished_title">Amueblado</h5>
-                        <p data-i18n="benefit_furnished_desc">Completamente amueblado y equipado</p>
+                        <i class="bi bi-cash-coin"></i>
+                        <h5 data-i18n="benefit_furnished_title">Calidad-Precio</h5>
+                        <p data-i18n="benefit_furnished_desc">Tarifas competitivas sin comprometer la calidad. Sin deposito y sin aval</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Policies -->
+    <section class="policies-section">
+        <div class="container">
+            <div class="section-title">
+                <h2 data-i18n="section_policies">Reservas</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="policy-card">
+                        <i class="bi bi-calendar-check policy-icon"></i>
+                        <h5 data-i18n="policy_booking_title">Como Reservar</h5>
+                        <p data-i18n="policy_booking_desc">Reserve sus fechas con anticipacion o verifique disponibilidad via WhatsApp para el mismo dia. Para confirmar la reserva se requiere foto de la transferencia.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="policy-card">
+                        <i class="bi bi-arrow-return-left policy-icon"></i>
+                        <h5 data-i18n="policy_cancel_title">Cancelacion</h5>
+                        <ul>
+                            <li data-i18n="policy_cancel_1">100% de reembolso si cancela con 2 dias de anticipacion</li>
+                            <li data-i18n="policy_cancel_2">50% de reembolso si cancela 1 dia antes</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="policy-card">
+                        <i class="bi bi-door-open policy-icon"></i>
+                        <h5 data-i18n="policy_checkin_title">Check-in</h5>
+                        <p data-i18n="policy_checkin_desc">En su primera visita alguien del staff le acompana y muestra el lugar. En visitas posteriores usted puede elegir ingresar solo.</p>
                     </div>
                 </div>
             </div>
@@ -1087,6 +1194,11 @@
 
     <!-- Footer -->
     <footer>
+        <p style="margin-bottom:12px;">
+            <a href="https://www.facebook.com/profile.php?id=100063777584753" target="_blank" style="color:var(--gold);font-size:1.5rem;margin:0 10px;" title="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://www.instagram.com/davishshouse" target="_blank" style="color:var(--gold);font-size:1.5rem;margin:0 10px;" title="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://wa.me/529993982548" target="_blank" style="color:var(--gold);font-size:1.5rem;margin:0 10px;" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+        </p>
         <p>&copy; 2026 Davish House Apartments. <span data-i18n="footer_rights">Todos los derechos reservados.</span></p>
     </footer>
 
@@ -1124,6 +1236,7 @@
                 badge_guarantor: 'Sin Aval',
                 badge_netflix: 'Netflix Incluido',
                 hero_cta: 'Reserva por WhatsApp',
+                catalog_btn: 'Ver Catalogo',
                 owner_role: 'Fundador & Propietario',
                 owner_bio: 'Bienvenido a Davish House Apartments. Me dedico a ofrecer departamentos de calidad, completamente amueblados y equipados, para que te sientas como en casa desde el primer dia. Sin deposito, sin aval, sin complicaciones \u2014 asi de simple. Cada departamento cuenta con Smart TV con Netflix, WiFi, y todo lo que necesitas para una estancia comoda.',
                 owner_cta: 'Habla conmigo directo',
@@ -1136,15 +1249,26 @@
                 price_month: 'Por Mes',
                 no_deposit_badge: 'SIN DEPOSITO Y SIN AVAL',
                 book_depa: 'Reservar Depa',
-                section_benefits: 'Beneficios',
+                apartments_intro: 'Nuestros apartamentos son ideales para personas de negocios, viajeros o para aquellos que estan de paso por la ciudad y buscan un lugar para descansar. Tambien son perfectos para parejas que buscan una escapada tranquila.',
+                extra_person: 'Persona extra: $100 MXN por dia o 4 horas',
+                section_benefits: 'Nuestros Servicios',
                 section_benefits_sub: 'Todo lo que necesitas, sin complicaciones',
-                benefit_deposit_title: 'Sin Deposito',
-                benefit_deposit_desc: 'No necesitas dejar deposito para mudarte',
-                benefit_guarantor_title: 'Sin Aval',
-                benefit_guarantor_desc: 'No pedimos aval ni referencias',
-                benefit_netflix_desc: 'Smart TV con Netflix incluido en cada depa',
-                benefit_furnished_title: 'Amueblado',
-                benefit_furnished_desc: 'Completamente amueblado y equipado',
+                benefit_deposit_title: 'Atencion Personalizada',
+                benefit_deposit_desc: 'Nos preocupamos por cada detalle y nos esforzamos por cumplir tus necesidades durante tu estadia',
+                benefit_guarantor_title: 'Ubicaciones Privilegiadas',
+                benefit_guarantor_desc: 'Nuestros apartamentos se encuentran en lugares estrategicos con acceso facil a las principales atracciones',
+                benefit_netflix_title: 'Comodidades Modernas',
+                benefit_netflix_desc: 'Cada alojamiento cuenta con todas las comodidades modernas: Smart TV, Netflix, WiFi, AC',
+                benefit_furnished_title: 'Calidad-Precio',
+                benefit_furnished_desc: 'Tarifas competitivas sin comprometer la calidad. Sin deposito y sin aval',
+                section_policies: 'Reservas',
+                policy_booking_title: 'Como Reservar',
+                policy_booking_desc: 'Reserve sus fechas con anticipacion o verifique disponibilidad via WhatsApp para el mismo dia. Para confirmar la reserva se requiere foto de la transferencia.',
+                policy_cancel_title: 'Cancelacion',
+                policy_cancel_1: '100% de reembolso si cancela con 2 dias de anticipacion',
+                policy_cancel_2: '50% de reembolso si cancela 1 dia antes',
+                policy_checkin_title: 'Check-in',
+                policy_checkin_desc: 'En su primera visita alguien del staff le acompana y muestra el lugar. En visitas posteriores usted puede elegir ingresar solo.',
                 cta_title: 'Reserva Tu Departamento Hoy',
                 cta_desc: 'Contactanos por WhatsApp y agenda tu visita. Respuesta inmediata.',
                 cta_button: 'Escribenos por WhatsApp',
@@ -1177,8 +1301,9 @@
                 badge_guarantor: 'No Guarantor',
                 badge_netflix: 'Netflix Included',
                 hero_cta: 'Book via WhatsApp',
+                catalog_btn: 'View Catalog',
                 owner_role: 'Founder & Owner',
-                owner_bio: 'Welcome to Davish House Apartments. I am dedicated to offering quality apartments, fully furnished and equipped, so you feel at home from day one. No deposit, no guarantor, no hassle \u2014 it\'s that simple. Every apartment comes with a Smart TV with Netflix, WiFi, and everything you need for a comfortable stay.',
+                owner_bio: 'We are a company committed to providing exceptional accommodation services in Merida, Yucatan. We offer quality apartments, fully furnished and equipped, so you feel at home from day one. No deposit, no guarantor, no hassle. Our team of attentive and friendly professionals cares about your comfort and satisfaction. Every apartment comes with a Smart TV with Netflix, WiFi, and everything you need for a comfortable stay.',
                 owner_cta: 'Talk to me directly',
                 section_apartments: 'Our Apartments',
                 section_apartments_sub: 'Choose the one that best fits your needs',
@@ -1191,13 +1316,26 @@
                 book_depa: 'Book Apt',
                 section_benefits: 'Benefits',
                 section_benefits_sub: 'Everything you need, hassle-free',
-                benefit_deposit_title: 'No Deposit',
-                benefit_deposit_desc: 'No deposit required to move in',
-                benefit_guarantor_title: 'No Guarantor',
-                benefit_guarantor_desc: 'No guarantor or references needed',
-                benefit_netflix_desc: 'Smart TV with Netflix included in every apartment',
-                benefit_furnished_title: 'Furnished',
-                benefit_furnished_desc: 'Fully furnished and equipped',
+                apartments_intro: 'Our apartments are ideal for business travelers, visitors passing through the city looking for a place to rest, or couples seeking a quiet getaway.',
+                extra_person: 'Extra person: $100 MXN per day or 4 hours',
+                section_benefits: 'Our Services',
+                section_benefits_sub: 'Everything you need, hassle-free',
+                benefit_deposit_title: 'Personalized Service',
+                benefit_deposit_desc: 'We care about every detail and strive to meet your needs during your stay',
+                benefit_guarantor_title: 'Prime Locations',
+                benefit_guarantor_desc: 'Our apartments are in strategic locations with easy access to main attractions',
+                benefit_netflix_title: 'Modern Amenities',
+                benefit_netflix_desc: 'Every apartment comes with modern amenities: Smart TV, Netflix, WiFi, AC',
+                benefit_furnished_title: 'Value for Money',
+                benefit_furnished_desc: 'Competitive rates without compromising quality. No deposit, no guarantor',
+                section_policies: 'Reservations',
+                policy_booking_title: 'How to Book',
+                policy_booking_desc: 'Book your dates in advance or check same-day availability via WhatsApp. A photo of the bank transfer is required to confirm your reservation.',
+                policy_cancel_title: 'Cancellation',
+                policy_cancel_1: '100% refund if cancelled 2 days in advance',
+                policy_cancel_2: '50% refund if cancelled 1 day before',
+                policy_checkin_title: 'Check-in',
+                policy_checkin_desc: 'On your first visit, a staff member will accompany you and show you the place. On subsequent visits, you can choose to enter on your own.',
                 cta_title: 'Book Your Apartment Today',
                 cta_desc: 'Contact us on WhatsApp and schedule your visit. Immediate response.',
                 cta_button: 'Write us on WhatsApp',
@@ -1230,6 +1368,7 @@
                 badge_guarantor: 'Kein B\u00fcrge',
                 badge_netflix: 'Netflix Inklusive',
                 hero_cta: '\u00dcber WhatsApp buchen',
+                catalog_btn: 'Katalog ansehen',
                 owner_role: 'Gr\u00fcnder & Eigent\u00fcmer',
                 owner_bio: 'Willkommen bei Davish House Apartments. Ich widme mich dem Angebot von hochwertigen Wohnungen, komplett m\u00f6bliert und ausgestattet, damit du dich vom ersten Tag an wie zu Hause f\u00fchlst. Keine Kaution, kein B\u00fcrge, keine Komplikationen \u2014 so einfach ist das. Jede Wohnung verf\u00fcgt \u00fcber einen Smart TV mit Netflix, WLAN und alles, was du f\u00fcr einen komfortablen Aufenthalt brauchst.',
                 owner_cta: 'Sprich direkt mit mir',
@@ -1244,13 +1383,26 @@
                 book_depa: 'Wohnung buchen',
                 section_benefits: 'Vorteile',
                 section_benefits_sub: 'Alles was du brauchst, ohne Komplikationen',
-                benefit_deposit_title: 'Keine Kaution',
-                benefit_deposit_desc: 'Keine Kaution erforderlich',
-                benefit_guarantor_title: 'Kein B\u00fcrge',
-                benefit_guarantor_desc: 'Kein B\u00fcrge oder Referenzen n\u00f6tig',
-                benefit_netflix_desc: 'Smart TV mit Netflix in jeder Wohnung',
-                benefit_furnished_title: 'M\u00f6bliert',
-                benefit_furnished_desc: 'Komplett m\u00f6bliert und ausgestattet',
+                apartments_intro: 'Unsere Wohnungen sind ideal f\u00fcr Gesch\u00e4ftsreisende, Besucher auf der Durchreise oder Paare, die einen ruhigen R\u00fcckzugsort suchen.',
+                extra_person: 'Zusatzperson: $100 MXN pro Tag oder 4 Stunden',
+                section_benefits: 'Unsere Leistungen',
+                section_benefits_sub: 'Alles was du brauchst, ohne Komplikationen',
+                benefit_deposit_title: 'Pers\u00f6nlicher Service',
+                benefit_deposit_desc: 'Wir k\u00fcmmern uns um jedes Detail und erf\u00fcllen Ihre Bed\u00fcrfnisse w\u00e4hrend Ihres Aufenthalts',
+                benefit_guarantor_title: 'Beste Lagen',
+                benefit_guarantor_desc: 'Unsere Wohnungen befinden sich an strategischen Standorten mit einfachem Zugang zu den Hauptattraktionen',
+                benefit_netflix_title: 'Moderne Annehmlichkeiten',
+                benefit_netflix_desc: 'Jede Wohnung verf\u00fcgt \u00fcber moderne Annehmlichkeiten: Smart TV, Netflix, WLAN, Klimaanlage',
+                benefit_furnished_title: 'Preis-Leistung',
+                benefit_furnished_desc: 'Wettbewerbsf\u00e4hige Preise ohne Kompromisse bei der Qualit\u00e4t. Keine Kaution, kein B\u00fcrge',
+                section_policies: 'Reservierungen',
+                policy_booking_title: 'So buchen Sie',
+                policy_booking_desc: 'Buchen Sie Ihre Termine im Voraus oder pr\u00fcfen Sie die Verf\u00fcgbarkeit am selben Tag \u00fcber WhatsApp. Ein Foto der \u00dcberweisung ist zur Best\u00e4tigung erforderlich.',
+                policy_cancel_title: 'Stornierung',
+                policy_cancel_1: '100% R\u00fcckerstattung bei Stornierung 2 Tage im Voraus',
+                policy_cancel_2: '50% R\u00fcckerstattung bei Stornierung 1 Tag vorher',
+                policy_checkin_title: 'Check-in',
+                policy_checkin_desc: 'Bei Ihrem ersten Besuch begleitet Sie ein Mitarbeiter und zeigt Ihnen den Ort. Bei weiteren Besuchen k\u00f6nnen Sie selbst einchecken.',
                 cta_title: 'Buche Deine Wohnung Heute',
                 cta_desc: 'Kontaktiere uns \u00fcber WhatsApp und vereinbare einen Besichtigungstermin. Sofortige Antwort.',
                 cta_button: 'Schreib uns auf WhatsApp',
@@ -1283,6 +1435,7 @@
                 badge_guarantor: 'Senza Garante',
                 badge_netflix: 'Netflix Incluso',
                 hero_cta: 'Prenota via WhatsApp',
+                catalog_btn: 'Vedi Catalogo',
                 owner_role: 'Fondatore & Proprietario',
                 owner_bio: 'Benvenuto a Davish House Apartments. Mi dedico ad offrire appartamenti di qualit\u00e0, completamente arredati e attrezzati, per farti sentire a casa dal primo giorno. Senza deposito, senza garante, senza complicazioni \u2014 \u00e8 cos\u00ec semplice. Ogni appartamento dispone di Smart TV con Netflix, WiFi e tutto ci\u00f2 di cui hai bisogno per un soggiorno confortevole.',
                 owner_cta: 'Parla direttamente con me',
@@ -1297,13 +1450,26 @@
                 book_depa: 'Prenota Apt',
                 section_benefits: 'Vantaggi',
                 section_benefits_sub: 'Tutto ci\u00f2 di cui hai bisogno, senza complicazioni',
-                benefit_deposit_title: 'Senza Deposito',
-                benefit_deposit_desc: 'Nessun deposito necessario per trasferirti',
-                benefit_guarantor_title: 'Senza Garante',
-                benefit_guarantor_desc: 'Nessun garante o referenze richieste',
-                benefit_netflix_desc: 'Smart TV con Netflix incluso in ogni appartamento',
-                benefit_furnished_title: 'Arredato',
-                benefit_furnished_desc: 'Completamente arredato e attrezzato',
+                apartments_intro: 'I nostri appartamenti sono ideali per viaggiatori d\'affari, visitatori di passaggio o coppie in cerca di una fuga tranquilla.',
+                extra_person: 'Persona extra: $100 MXN al giorno o 4 ore',
+                section_benefits: 'I Nostri Servizi',
+                section_benefits_sub: 'Tutto ci\u00f2 di cui hai bisogno, senza complicazioni',
+                benefit_deposit_title: 'Servizio Personalizzato',
+                benefit_deposit_desc: 'Ci preoccupiamo di ogni dettaglio e ci impegniamo a soddisfare le tue esigenze durante il soggiorno',
+                benefit_guarantor_title: 'Posizioni Privilegiate',
+                benefit_guarantor_desc: 'I nostri appartamenti si trovano in posizioni strategiche con facile accesso alle principali attrazioni',
+                benefit_netflix_title: 'Comfort Moderni',
+                benefit_netflix_desc: 'Ogni appartamento dispone di comfort moderni: Smart TV, Netflix, WiFi, AC',
+                benefit_furnished_title: 'Qualit\u00e0-Prezzo',
+                benefit_furnished_desc: 'Tariffe competitive senza compromettere la qualit\u00e0. Senza deposito e senza garante',
+                section_policies: 'Prenotazioni',
+                policy_booking_title: 'Come Prenotare',
+                policy_booking_desc: 'Prenota le tue date in anticipo o verifica la disponibilit\u00e0 per lo stesso giorno via WhatsApp. Per confermare la prenotazione \u00e8 necessaria una foto del bonifico.',
+                policy_cancel_title: 'Cancellazione',
+                policy_cancel_1: 'Rimborso del 100% se cancelli con 2 giorni di anticipo',
+                policy_cancel_2: 'Rimborso del 50% se cancelli 1 giorno prima',
+                policy_checkin_title: 'Check-in',
+                policy_checkin_desc: 'Alla prima visita un membro dello staff ti accompagna e mostra il luogo. Nelle visite successive puoi scegliere di entrare da solo.',
                 cta_title: 'Prenota Il Tuo Appartamento Oggi',
                 cta_desc: 'Contattaci su WhatsApp e programma la tua visita. Risposta immediata.',
                 cta_button: 'Scrivici su WhatsApp',
@@ -1336,6 +1502,7 @@
                 badge_guarantor: 'Sem Fiador',
                 badge_netflix: 'Netflix Inclu\u00eddo',
                 hero_cta: 'Reserve pelo WhatsApp',
+                catalog_btn: 'Ver Cat\u00e1logo',
                 owner_role: 'Fundador & Propriet\u00e1rio',
                 owner_bio: 'Bem-vindo ao Davish House Apartments. Dedico-me a oferecer apartamentos de qualidade, completamente mobiliados e equipados, para que voc\u00ea se sinta em casa desde o primeiro dia. Sem dep\u00f3sito, sem fiador, sem complica\u00e7\u00f5es \u2014 simples assim. Cada apartamento conta com Smart TV com Netflix, WiFi e tudo o que voc\u00ea precisa para uma estadia confort\u00e1vel.',
                 owner_cta: 'Fale comigo diretamente',
@@ -1350,13 +1517,26 @@
                 book_depa: 'Reservar Apt',
                 section_benefits: 'Benef\u00edcios',
                 section_benefits_sub: 'Tudo o que voc\u00ea precisa, sem complica\u00e7\u00f5es',
-                benefit_deposit_title: 'Sem Dep\u00f3sito',
-                benefit_deposit_desc: 'N\u00e3o \u00e9 necess\u00e1rio dep\u00f3sito para se mudar',
-                benefit_guarantor_title: 'Sem Fiador',
-                benefit_guarantor_desc: 'N\u00e3o pedimos fiador nem refer\u00eancias',
-                benefit_netflix_desc: 'Smart TV com Netflix inclu\u00eddo em cada apartamento',
-                benefit_furnished_title: 'Mobiliado',
-                benefit_furnished_desc: 'Completamente mobiliado e equipado',
+                apartments_intro: 'Nossos apartamentos s\u00e3o ideais para viajantes de neg\u00f3cios, visitantes de passagem ou casais em busca de uma escapada tranquila.',
+                extra_person: 'Pessoa extra: $100 MXN por dia ou 4 horas',
+                section_benefits: 'Nossos Servi\u00e7os',
+                section_benefits_sub: 'Tudo o que voc\u00ea precisa, sem complica\u00e7\u00f5es',
+                benefit_deposit_title: 'Atendimento Personalizado',
+                benefit_deposit_desc: 'Cuidamos de cada detalhe e nos esfor\u00e7amos para atender suas necessidades durante a estadia',
+                benefit_guarantor_title: 'Localiza\u00e7\u00f5es Privilegiadas',
+                benefit_guarantor_desc: 'Nossos apartamentos est\u00e3o em locais estrat\u00e9gicos com f\u00e1cil acesso \u00e0s principais atra\u00e7\u00f5es',
+                benefit_netflix_title: 'Comodidades Modernas',
+                benefit_netflix_desc: 'Cada apartamento conta com comodidades modernas: Smart TV, Netflix, WiFi, AC',
+                benefit_furnished_title: 'Custo-Benef\u00edcio',
+                benefit_furnished_desc: 'Tarifas competitivas sem comprometer a qualidade. Sem dep\u00f3sito e sem fiador',
+                section_policies: 'Reservas',
+                policy_booking_title: 'Como Reservar',
+                policy_booking_desc: 'Reserve suas datas com anteced\u00eancia ou verifique disponibilidade pelo WhatsApp para o mesmo dia. Para confirmar a reserva \u00e9 necess\u00e1ria foto da transfer\u00eancia.',
+                policy_cancel_title: 'Cancelamento',
+                policy_cancel_1: '100% de reembolso se cancelar com 2 dias de anteced\u00eancia',
+                policy_cancel_2: '50% de reembolso se cancelar 1 dia antes',
+                policy_checkin_title: 'Check-in',
+                policy_checkin_desc: 'Na primeira visita, um membro da equipe acompanha e mostra o local. Nas visitas seguintes, voc\u00ea pode entrar sozinho.',
                 cta_title: 'Reserve Seu Apartamento Hoje',
                 cta_desc: 'Entre em contato pelo WhatsApp e agende sua visita. Resposta imediata.',
                 cta_button: 'Escreva-nos no WhatsApp',
