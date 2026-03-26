@@ -1,8 +1,4 @@
 <svg viewBox="0 0 1000 30" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-  <!-- Top line: straight → curves down through center → straight -->
-  <path d="M0,8 L440,8 Q470,8 485,15 Q500,22 515,15 Q530,8 560,8 L1000,8"
-        fill="none" stroke="#c9a84c" stroke-width="2" stroke-linejoin="round"/>
-  <!-- Bottom line: straight → curves up through center → straight -->
-  <path d="M0,22 L440,22 Q470,22 485,15 Q500,8 515,15 Q530,22 560,22 L1000,22"
-        fill="none" stroke="#c9a84c" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M0,8 C400,8 450,8 500,15 C550,22 600,22 1000,22" fill="none" stroke="#c9a84c" stroke-width="2"/>
+  <path d="M0,22 C400,22 450,22 500,15 C550,8 600,8 1000,8" fill="none" stroke="#c9a84c" stroke-width="2"/>
 </svg>
