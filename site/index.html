@@ -135,9 +135,12 @@
             --card-bg: #222;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             background-color: var(--dark-bg);
-            color: #f0f0f0;
+            color: #e8e8e8;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
@@ -281,10 +284,9 @@
         .section-divider {
             display: block;
             width: 100%;
-            height: 16px;
-            opacity: 0.8;
-            margin: 0;
-            padding: 0;
+            height: 30px;
+            opacity: 0.85;
+            margin: 20px 0;
         }
 
         /* Section titles */
@@ -378,18 +380,18 @@
         .amenity-tag {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             background: rgba(201, 168, 76, 0.1);
             border: 1px solid #444;
             color: #ccc;
-            padding: 4px 10px;
+            padding: 5px 11px;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.82rem;
             font-weight: 500;
         }
         .amenity-tag i {
             color: var(--gold);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }
 
         /* WhatsApp button */
@@ -669,6 +671,28 @@
             text-decoration: none;
         }
 
+        /* Focus states */
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid var(--gold);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.6rem;
+            }
+            .section-title h2 {
+                font-size: 1.6rem;
+            }
+            .btn-whatsapp, .btn-catalog {
+                font-size: 0.9rem;
+                padding: 10px 20px;
+            }
+            .navbar-brand img {
+                height: 32px !important;
+            }
+        }
+
         @media (max-width: 768px) {
             .hero {
                 background-position: 20% center;
@@ -815,7 +839,7 @@
                 <!-- Depa #51 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="depa-card">
-                        <img src="img/depa-51.jpg" class="card-img-top" alt="Departamento 51 amueblado en Merida Yucatan - Davish's House">
+                        <img src="img/depa-51.jpg" class="card-img-top" loading="lazy" alt="Departamento 51 amueblado en Merida Yucatan - Davish's House">
                         <div class="card-body">
                             <div class="depa-number"><span data-i18n="depa_label">Departamento</span> #51</div>
                             <div class="amenities">
@@ -850,7 +874,7 @@
                 <!-- Depa #52 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="depa-card">
-                        <img src="img/depa-52.jpg" class="card-img-top" alt="Departamento 52 con Netflix en Merida Yucatan - Davish's House">
+                        <img src="img/depa-52.jpg" class="card-img-top" loading="lazy" alt="Departamento 52 con Netflix en Merida Yucatan - Davish's House">
                         <div class="card-body">
                             <div class="depa-number"><span data-i18n="depa_label">Departamento</span> #52</div>
                             <div class="amenities">
@@ -886,7 +910,7 @@
                 <!-- Depa #53 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="depa-card">
-                        <img src="img/depa-53.jpg" class="card-img-top" alt="Departamento 53 amueblado en Merida Yucatan - Davish's House">
+                        <img src="img/depa-53.jpg" class="card-img-top" loading="lazy" alt="Departamento 53 amueblado en Merida Yucatan - Davish's House">
                         <div class="card-body">
                             <div class="depa-number"><span data-i18n="depa_label">Departamento</span> #53</div>
                             <div class="amenities">
@@ -921,7 +945,7 @@
                 <!-- Depa #54 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="depa-card">
-                        <img src="img/depa-54.jpg" class="card-img-top" alt="Departamento 54 con cocina en Merida Yucatan - Davish's House">
+                        <img src="img/depa-54.jpg" class="card-img-top" loading="lazy" alt="Departamento 54 con cocina en Merida Yucatan - Davish's House">
                         <div class="card-body">
                             <div class="depa-number"><span data-i18n="depa_label">Departamento</span> #54</div>
                             <div class="amenities">
@@ -957,7 +981,7 @@
                 <!-- Depa #57 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="depa-card">
-                        <img src="img/depa-57.jpg" class="card-img-top" alt="Departamento 57 dos camas en Merida Yucatan - Davish's House">
+                        <img src="img/depa-57.jpg" class="card-img-top" loading="lazy" alt="Departamento 57 dos camas en Merida Yucatan - Davish's House">
                         <div class="card-body">
                             <div class="depa-number"><span data-i18n="depa_label">Departamento</span> #57</div>
                             <div class="amenities">
@@ -993,7 +1017,7 @@
                 <!-- Depa #58 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="depa-card">
-                        <img src="img/depa-58.jpg" class="card-img-top" alt="Departamento 58 con cocineta en Merida Yucatan - Davish's House">
+                        <img src="img/depa-58.jpg" class="card-img-top" loading="lazy" alt="Departamento 58 con cocineta en Merida Yucatan - Davish's House">
                         <div class="card-body">
                             <div class="depa-number"><span data-i18n="depa_label">Departamento</span> #58</div>
                             <div class="amenities">
@@ -1028,7 +1052,7 @@
                 <!-- Depa #59 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="depa-card">
-                        <img src="img/depa-59.jpg" class="card-img-top" alt="Departamento 59 con Netflix en Merida Yucatan - Davish's House">
+                        <img src="img/depa-59.jpg" class="card-img-top" loading="lazy" alt="Departamento 59 con Netflix en Merida Yucatan - Davish's House">
                         <div class="card-body">
                             <div class="depa-number"><span data-i18n="depa_label">Departamento</span> #59</div>
                             <div class="amenities">
@@ -1063,7 +1087,7 @@
                 <!-- Depa #64 -->
                 <div class="col-lg-4 col-md-6">
                     <div class="depa-card">
-                        <img src="img/depa-64.jpg" class="card-img-top" alt="Departamento 64 amueblado en Merida Yucatan - Davish's House">
+                        <img src="img/depa-64.jpg" class="card-img-top" loading="lazy" alt="Departamento 64 amueblado en Merida Yucatan - Davish's House">
                         <div class="card-body">
                             <div class="depa-number"><span data-i18n="depa_label">Departamento</span> #64</div>
                             <div class="amenities">
