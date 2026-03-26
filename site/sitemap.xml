@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://davish.pro/</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://davish.pro/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://davish.pro/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://davish.pro/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://davish.pro/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://davish.pro/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://davish.pro/"/>
+    <image:image>
+      <image:loc>https://davish.pro/img/header.png</image:loc>
+      <image:title>Davish House Apartments Merida Yucatan</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://davish.pro/img/depa-51.jpg</image:loc>
+      <image:title>Departamento 51 amueblado Merida Yucatan</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://davish.pro/img/depa-52.jpg</image:loc>
+      <image:title>Departamento 52 con Netflix Merida Yucatan</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://davish.pro/img/depa-53.jpg</image:loc>
+      <image:title>Departamento 53 amueblado Merida Yucatan</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://davish.pro/img/depa-54.jpg</image:loc>
+      <image:title>Departamento 54 con cocina Merida Yucatan</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://davish.pro/img/depa-57.jpg</image:loc>
+      <image:title>Departamento 57 dos camas Merida Yucatan</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://davish.pro/img/depa-58.jpg</image:loc>
+      <image:title>Departamento 58 con cocineta Merida Yucatan</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://davish.pro/img/depa-59.jpg</image:loc>
+      <image:title>Departamento 59 con Netflix Merida Yucatan</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://davish.pro/img/depa-64.jpg</image:loc>
+      <image:title>Departamento 64 amueblado Merida Yucatan</image:title>
+    </image:image>
+  </url>
+</urlset>
