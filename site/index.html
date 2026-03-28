@@ -1222,7 +1222,7 @@
                             </div>
                             <div class="pricing-row">
                                 <span class="label"><i class="bi bi-clock"></i> <span data-i18n="price_4hrs">4 Horas</span></span>
-                                <span class="price">$400</span>
+                                <span class="price">$500</span>
                             </div>
                             <div class="pricing-row">
                                 <span class="label"><i class="bi bi-sun"></i> <span data-i18n="price_day">Por Dia</span></span>
@@ -1910,6 +1910,11 @@
 
             // Save preference
             try { localStorage.setItem('davish_lang', lang); } catch(e) {}
+
+            // Set GA4 user property so language is attached to every event
+            if (typeof gtag === 'function') {
+                gtag('set', 'user_properties', { site_language: lang });
+            }
         }
 
         // Dropdown click handlers
