@@ -4,7 +4,7 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://davish.pro/</loc>
-    <lastmod>2026-03-26</lastmod>
+    <lastmod>2026-06-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://davish.pro/"/>
@@ -48,6 +48,14 @@
     <image:image>
       <image:loc>https://davish.pro/img/depa-64.jpg</image:loc>
       <image:title>Departamento 64 amueblado Merida Yucatan</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://davish.pro/img/depa-66.jpg</image:loc>
+      <image:title>Departamento 66 amueblado Merida Yucatan</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://davish.pro/img/depa-chicxulub.jpg</image:loc>
+      <image:title>Departamento Punta Arena en la playa Chicxulub Puerto Yucatan</image:title>
     </image:image>
   </url>
 </urlset>
