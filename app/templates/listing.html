@@ -50,9 +50,9 @@
     {% if l.house_rules %}<section><h2>{{ _('House rules') }}</h2><p class="prose">{{ l.house_rules }}</p></section>{% endif %}
     <section>
       <h2>{{ _('Availability & prices') }}</h2>
-      <p class="muted small">{{ _('Price per day for the minimum stay. Partially booked days still have free hours.') }}</p>
-      <div class="cal-strip">
-        {% for d in days %}<div class="cal-day {{ d.state }}" title="{{ d.free_hours }}h {{ _('free') }}"><span class="cd">{{ d.date[8:] }}</span><span class="cm">{{ d.date[5:7] }}</span><span class="cp">${{ (d.rate * ([l.min_hours, 24] | min) / 100) | round | int }}</span></div>{% endfor %}
+      <p class="muted small">{{ _('Price per day for the minimum stay. Partially booked days still have free hours.') }} {{ _('Click a day to set your check-in, then another for check-out.') }}</p>
+      <div class="cal-strip" id="cal-strip">
+        {% for d in days %}<div class="cal-day {{ d.state }}" data-date="{{ d.date }}" title="{{ d.free_hours }}h {{ _('free') }}"><span class="cd">{{ d.date[8:] }}</span><span class="cm">{{ d.date[5:7] }}</span><span class="cp">${{ (d.rate * ([l.min_hours, 24] | min) / 100) | round | int }}</span></div>{% endfor %}
       </div>
     </section>
     <section id="reviews">

@@ -20,7 +20,7 @@
     el.value = `${d}T${tm.slice(0, 2)}:00`;
   }
 
-  async function update() {
+  let update = async function () {
     snap(startIn); snap(endIn);
     quoteEl.hidden = true; if (btn) btn.disabled = true;
     if (!startIn.value || !endIn.value) { selEl.textContent = ''; return; }
@@ -44,8 +44,30 @@
     document.getElementById('q-total').textContent = money(q.total_cents);
     quoteEl.hidden = false; if (btn) btn.disabled = false;
   }
+  // Availability strip: mirror the picked range, and let a click set check-in / check-out days.
+  const strip = document.getElementById('cal-strip');
+  function paintStrip() {
+    if (!strip) return;
+    const a = (startIn.value || '').slice(0, 10), b = (endIn.value || '').slice(0, 10);
+    strip.querySelectorAll('.cal-day').forEach(el => {
+      const d = el.dataset.date;
+      el.classList.toggle('sel', !!a && !!b && d >= a && d <= b);
+      el.classList.toggle('sel-start', d === a); el.classList.toggle('sel-end', d === b);
+    });
+  }
+  let pickingEnd = false;
+  if (strip) strip.addEventListener('click', e => {
+    const el = e.target.closest('.cal-day'); if (!el || el.classList.contains('busy')) return;
+    const d = el.dataset.date, st = (startIn.value || '').slice(11) || '10:00', et = (endIn.value || '').slice(11) || st;
+    if (!pickingEnd || d < (startIn.value || '').slice(0, 10)) { startIn.value = `${d}T${st}`; pickingEnd = true; }
+    else { endIn.value = `${d}T${et}`; pickingEnd = false; }
+    if (endIn.value <= startIn.value) { const x = new Date(startIn.value); x.setHours(x.getHours() + Math.max(2, minH)); const p = n => String(n).padStart(2, '0'); endIn.value = `${x.getFullYear()}-${p(x.getMonth() + 1)}-${p(x.getDate())}T${p(x.getHours())}:00`; }
+    update();
+  });
+  const _update = update; update = async function () { paintStrip(); return _update(); };
+
   startIn.addEventListener('change', () => { if (endIn.value <= startIn.value) { const d = new Date(startIn.value); d.setHours(d.getHours() + 2); const p = n => String(n).padStart(2, '0'); endIn.value = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:00`; } update(); });
   endIn.addEventListener('change', update);
   if (guestsIn) guestsIn.addEventListener('change', update);
-  update();
+  paintStrip(); update();
 })();

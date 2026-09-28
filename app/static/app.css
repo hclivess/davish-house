@@ -253,3 +253,8 @@ input[type=file]::file-selector-button:hover { background: var(--gold); color: #
 .how-grid > div > strong { display: inline-block; vertical-align: middle; font-size: 1.05rem; line-height: 36px; }
 .how-grid > div > p { margin-top: 10px; }
 .payout-box { background: #222; border: 1px solid #333; border-radius: 16px; padding: 22px; margin: 16px 0 24px; } .payout-box h2 { margin-top: 0; }
+
+/* selected range on the availability strip */
+.cal-day { cursor: pointer; } .cal-day.busy { cursor: not-allowed; }
+.cal-day.sel { background: rgba(201,168,76,.18); border-color: var(--gold); color: #fff; } .cal-day.sel .cp { color: var(--gold-light); }
+.cal-day.sel-start, .cal-day.sel-end { background: var(--gold); color: #151515; } .cal-day.sel-start .cm, .cal-day.sel-end .cm, .cal-day.sel-start .cp, .cal-day.sel-end .cp { color: #151515; }

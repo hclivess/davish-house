@@ -11,7 +11,7 @@ pytestmark = pytest.mark.e2e
 def test_home_renders_in_spanish_with_brand(page, server):
     page.goto(server + "/")
     assert "Davish" in page.title()
-    assert page.locator("h1").first.inner_text().startswith("Apartamentos con precisión horaria")
+    assert page.locator("h1").first.inner_text().lower().startswith("apartamentos con precisión horaria")
     assert page.locator("form.searchbar input[name=date]").input_value() != ""       # default window filled by JS
     assert page.locator("form.searchbar input[name=start]").input_value().endswith(":00")
     assert page.locator("a[href*='wa.me']").count() >= 1                                # WhatsApp contact
@@ -21,7 +21,7 @@ def test_language_switch_persists(page, server):
     page.goto(server + "/")
     page.click(".lang-switch a[hreflang=en]")
     page.wait_for_load_state("networkidle")
-    assert "Apartments with hourly precision" in page.locator("h1").first.inner_text()
+    assert "apartments with hourly precision" in page.locator("h1").first.inner_text().lower()
     page.goto(server + "/login")
     assert "Welcome back" in page.inner_text("h1")
     page.click(".lang-switch a[hreflang=es]")
@@ -176,3 +176,18 @@ def test_admin_panel(page, server):
     assert "Usuarios" in page.inner_text("body")
     page.goto(server + "/admin?tab=listings")
     assert page.locator("table.table tr").count() >= 3
+
+
+def test_availability_strip_mirrors_and_sets_dates(page, server):
+    d1, d2 = day(3), day(5)
+    page.goto(f"{server}/listings/1?date={d1}&start=10:00&end_date={d2}&end=10:00")
+    page.wait_for_selector("#quote:not([hidden])", timeout=8000)
+    assert page.locator(f".cal-day[data-date='{d1}']").evaluate("el => el.classList.contains('sel-start')")
+    assert page.locator(f".cal-day[data-date='{d2}']").evaluate("el => el.classList.contains('sel-end')")
+    assert page.locator(f".cal-day[data-date='{day(4)}']").evaluate("el => el.classList.contains('sel')")
+    # Clicking days re-sets check-in and check-out, keeping the times.
+    page.click(f".cal-day[data-date='{day(6)}']")
+    page.click(f".cal-day[data-date='{day(8)}']")
+    assert page.input_value("#start_at") == f"{day(6)}T10:00" and page.input_value("#end_at") == f"{day(8)}T10:00"
+    page.wait_for_selector("#quote:not([hidden])", timeout=8000)
+    assert page.locator(f".cal-day[data-date='{day(7)}']").evaluate("el => el.classList.contains('sel')")

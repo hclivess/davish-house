@@ -272,7 +272,7 @@ ES.update({
 ES.update({"Founder & owner": "Fundador y propietario", "Hola, me interesa": "Hola, me interesa",
     "Furnished, fully equipped apartments in Mérida and on the beach in Chicxulub Puerto. No deposit, no guarantor, no hassle. Every apartment has a Smart TV with Netflix, fast Wi-Fi, air conditioning, pool and parking.":
     "Departamentos amueblados y equipados en Mérida y en la playa de Chicxulub Puerto. Sin depósito, sin aval, sin complicaciones. Todos tienen Smart TV con Netflix, Wi-Fi rápido, aire acondicionado, alberca y estacionamiento.",
-    "Netflix included": "Netflix incluido", "Payouts": "Pagos", "tab_payouts": "Pagos", "payouts: automatic": "pagos: automáticos", "payouts: manual": "pagos: manuales",
+    "Netflix included": "Netflix incluido", "Click a day to set your check-in, then another for check-out.": "Haz clic en un día para fijar la entrada y en otro para la salida.", "Payouts": "Pagos", "tab_payouts": "Pagos", "payouts: automatic": "pagos: automáticos", "payouts: manual": "pagos: manuales",
     "Your bank account is connected. Payouts are now automatic.": "Tu cuenta bancaria está conectada. Los pagos ya son automáticos.",
     "How you get paid": "Cómo recibes tu dinero",
     "Card payments are not configured on this platform yet. Bookings are recorded and paid out manually by the administrator.": "Los pagos con tarjeta aún no están configurados en esta plataforma. Las reservas se registran y el administrador te paga manualmente.",
