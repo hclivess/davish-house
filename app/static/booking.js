@@ -5,6 +5,7 @@
   if (!panel || !form) return;
   const T = JSON.parse(panel.dataset.i18n || '{}'); const t = k => T[k] || k;
   const listingId = Number(panel.dataset.listing);
+  const minH = parseFloat(panel.dataset.min) || 1;
   const startIn = document.getElementById('start_at'), endIn = document.getElementById('end_at');
   const selEl = document.getElementById('selection'), quoteEl = document.getElementById('quote'), btn = document.getElementById('book-btn');
   const cur = panel.dataset.currency && panel.dataset.currency !== 'USD' ? ' ' + panel.dataset.currency : '';
