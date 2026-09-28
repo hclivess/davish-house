@@ -272,7 +272,19 @@ ES.update({
 ES.update({"Founder & owner": "Fundador y propietario", "Hola, me interesa": "Hola, me interesa",
     "Furnished, fully equipped apartments in Mérida and on the beach in Chicxulub Puerto. No deposit, no guarantor, no hassle. Every apartment has a Smart TV with Netflix, fast Wi-Fi, air conditioning, pool and parking.":
     "Departamentos amueblados y equipados en Mérida y en la playa de Chicxulub Puerto. Sin depósito, sin aval, sin complicaciones. Todos tienen Smart TV con Netflix, Wi-Fi rápido, aire acondicionado, alberca y estacionamiento.",
-    "Netflix included": "Netflix incluido", "all hosts (admin)": "todos los anfitriones (admin)", "Our apartments": "Nuestros departamentos", "Pick a check-in and check-out and search to see availability.": "Elige entrada y salida y busca para ver la disponibilidad.", "all": "todos", "cap per 30 days": "tope por 30 días", "/ month": "/ mes", "Price per day for the minimum stay. Partially booked days still have free hours.": "Precio por día para la estancia mínima. Los días parcialmente reservados aún tienen horas libres."})
+    "Netflix included": "Netflix incluido", "Payouts": "Pagos", "tab_payouts": "Pagos", "payouts: automatic": "pagos: automáticos", "payouts: manual": "pagos: manuales",
+    "Your bank account is connected. Payouts are now automatic.": "Tu cuenta bancaria está conectada. Los pagos ya son automáticos.",
+    "How you get paid": "Cómo recibes tu dinero",
+    "Card payments are not configured on this platform yet. Bookings are recorded and paid out manually by the administrator.": "Los pagos con tarjeta aún no están configurados en esta plataforma. Las reservas se registran y el administrador te paga manualmente.",
+    "Automatic": "Automático", "Every confirmed booking is paid to your bank account by Stripe, daily.": "Stripe deposita cada reserva confirmada en tu cuenta bancaria, a diario.",
+    "Open Stripe payout dashboard": "Abrir el panel de pagos de Stripe", "Incomplete": "Incompleto",
+    "Stripe still needs some information before payouts can start.": "Stripe todavía necesita algunos datos antes de activar los pagos.", "Continue setup": "Continuar configuración",
+    "Connect your bank account once and every booking is paid out to you automatically. Stripe verifies your identity and CLABE; it takes about five minutes.": "Conecta tu cuenta bancaria una sola vez y cada reserva se te pagará automáticamente. Stripe verifica tu identidad y tu CLABE; tarda unos cinco minutos.",
+    "Connect payouts": "Conectar pagos", "Until then, the administrator pays you by bank transfer for each completed booking.": "Mientras tanto, el administrador te paga por transferencia cada reserva completada.",
+    "Booking payouts": "Pagos por reserva", "total": "total", "automatic (Stripe)": "automático (Stripe)", "paid by transfer": "pagado por transferencia",
+    "manual payout pending": "pago manual pendiente", "Mark paid": "Marcar pagado", "No payouts yet.": "Todavía no hay pagos.",
+    "Stripe is not configured on this server yet.": "Stripe aún no está configurado en este servidor.",
+    "The host confirms your request, usually within the hour. Cleaning time between stays is blocked automatically.": "El anfitrión confirma tu solicitud, normalmente en menos de una hora. El tiempo de limpieza entre estancias se bloquea automáticamente.", "all hosts (admin)": "todos los anfitriones (admin)", "Our apartments": "Nuestros departamentos", "Pick a check-in and check-out and search to see availability.": "Elige entrada y salida y busca para ver la disponibilidad.", "all": "todos", "cap per 30 days": "tope por 30 días", "/ month": "/ mes", "Price per day for the minimum stay. Partially booked days still have free hours.": "Precio por día para la estancia mínima. Los días parcialmente reservados aún tienen horas libres."})
 EN_LABELS.update({"policy_two_days": "full refund until 2 days before check-in, 50% until 1 day before", "two_days": "2 days"})
 
 CATALOG = {"es": ES}

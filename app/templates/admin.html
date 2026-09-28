@@ -2,7 +2,7 @@
 {% block title %}{{ _('Admin') }}{% endblock %}
 {% block content %}
 <h1>{{ _('Admin') }}</h1>
-<div class="filters">{% for t in ['overview', 'users', 'listings', 'bookings'] %}<a class="pill {{ 'active' if tab == t }}" href="/admin?tab={{ t }}">{{ _('tab_' + t) }}</a>{% endfor %}
+<div class="filters">{% for t in ['overview', 'users', 'listings', 'bookings', 'payouts'] %}<a class="pill {{ 'active' if tab == t }}" href="/admin?tab={{ t }}">{{ _('tab_' + t) }}</a>{% endfor %}
   {% if tab != 'overview' %}<form method="get" action="/admin" class="inline"><input type="hidden" name="tab" value="{{ tab }}"><input name="q" value="{{ q }}" placeholder="{{ _('Search') }}…"></form>{% endif %}</div>
 {% if tab == 'overview' %}
 <div class="stats">
@@ -13,7 +13,7 @@
 </div>
 {% elif tab == 'users' %}
 <table class="table"><tr><th>ID</th><th>{{ _('Name') }}</th><th>{{ _('Email') }}</th><th>{{ _('Role') }}</th><th>{{ _('Joined') }}</th><th></th></tr>
-{% for x in users %}<tr class="{{ 'muted' if x.is_banned }}"><td>{{ x.id }}</td><td><a href="/users/{{ x.id }}">{{ x.name }}</a></td><td>{{ x.email }}</td><td>{{ _('Admin') if x.is_admin }} {{ _('Host') if x.is_host }} {{ _('suspended') if x.is_banned }}</td><td>{{ x.created_at | fdate }}</td>
+{% for x in users %}<tr class="{{ 'muted' if x.is_banned }}"><td>{{ x.id }}</td><td><a href="/users/{{ x.id }}">{{ x.name }}</a></td><td>{{ x.email }}</td><td>{{ _('Admin') if x.is_admin }} {{ _('Host') if x.is_host }} {{ _('suspended') if x.is_banned }}{% if x.is_host %} · {{ _('payouts: automatic') if x.stripe_payouts_enabled else _('payouts: manual') }}{% endif %}</td><td>{{ x.created_at | fdate }}</td>
 <td>{% if x.id != user.id %}<form method="post" action="/admin/users/{{ x.id }}/ban" class="inline"><input type="hidden" name="banned" value="{{ 0 if x.is_banned else 1 }}"><button class="btn btn-sm btn-ghost">{{ _('Reinstate') if x.is_banned else _('Suspend') }}</button></form>{% endif %}</td></tr>{% endfor %}</table>
 {% elif tab == 'listings' %}
 <table class="table"><tr><th>ID</th><th>{{ _('Title') }}</th><th>{{ _('City') }}</th><th>{{ _('Host') }}</th><th>{{ _('Rate') }}</th><th>{{ _('Status') }}</th><th></th></tr>

@@ -18,8 +18,8 @@ from ..pricing import POLICIES, day_rate, rules_for
 from ..db import row, rows, transaction
 from ..deps import db, render, user
 from ..i18n import _
-from ..queries import (LISTING_CARD_SQL, admin_overview, booking_detail, host_bookings, host_stats, listing_detail, public_profile,
-                       search_listings, user_favorites, user_trips)
+from ..queries import (LISTING_CARD_SQL, admin_overview, booking_detail, host_bookings, host_payouts, host_stats, listing_detail,
+                       public_profile, search_listings, user_favorites, user_trips)
 from ..timezones import COMMON_TIMEZONES, local_now, valid as valid_tz
 
 router = APIRouter()
@@ -792,6 +792,88 @@ def delete_price_rule(request: Request, listing_id: int, rule_id: int, conn: sql
     return _redirect(f"/host/listings/{listing_id}/calendar#rules")
 
 
+# ---------------------------------------------------------------- payouts (Stripe Connect Express)
+
+
+def _payout_ctx(conn, u, error=None):
+    acct = row(conn, "SELECT stripe_account_id, stripe_payouts_enabled FROM users WHERE id = ?", (u["id"],))
+    status = None
+    if acct["stripe_account_id"] and payments.configured():
+        try:
+            status = payments.account_status(acct["stripe_account_id"])
+            conn.execute("UPDATE users SET stripe_payouts_enabled = ? WHERE id = ?", (1 if status["payouts_enabled"] else 0, u["id"]))
+            acct = dict(acct, stripe_payouts_enabled=1 if status["payouts_enabled"] else 0)
+        except payments.PaymentError as e:
+            error = error or str(e)
+    payouts = host_payouts(conn, None if u.get("is_admin") else u["id"])
+    total = sum(p["host_payout_cents"] for p in payouts)
+    return {"user": u, "acct": acct, "status": status, "payouts": payouts, "total_cents": total, "stripe": payments.configured(), "error": error,
+            "all_hosts": bool(u.get("is_admin"))}
+
+
+@router.get("/host/payouts", response_class=HTMLResponse)
+def payouts_page(request: Request, conn: sqlite3.Connection = Depends(db), u: dict | None = Depends(user), connected: int = 0):
+    if (g := _host_guard(request, u)):
+        return g
+    ctx = _payout_ctx(conn, u)
+    ctx["just_returned"] = bool(connected)
+    return render(request, "host/payouts.html", ctx)
+
+
+@router.post("/host/payouts/connect")
+def payouts_connect(request: Request, conn: sqlite3.Connection = Depends(db), u: dict | None = Depends(user)):
+    """Create the host's Express account if needed and send them to Stripe's hosted onboarding."""
+    if (g := _host_guard(request, u)):
+        return g
+    if not payments.configured():
+        return render(request, "host/payouts.html", _payout_ctx(conn, u, "Stripe is not configured on this server yet."), 400)
+    acct = row(conn, "SELECT stripe_account_id FROM users WHERE id = ?", (u["id"],))
+    try:
+        account_id = acct["stripe_account_id"]
+        if not account_id:
+            account_id = payments.create_connect_account(u["email"], u["name"])
+            conn.execute("UPDATE users SET stripe_account_id = ? WHERE id = ?", (account_id, u["id"]))
+        url = payments.account_onboarding_link(account_id, f"{settings.BASE_URL}/host/payouts/refresh", f"{settings.BASE_URL}/host/payouts?connected=1")
+    except payments.PaymentError as e:
+        return render(request, "host/payouts.html", _payout_ctx(conn, u, str(e)), 502)
+    return _redirect(url)
+
+
+@router.get("/host/payouts/refresh")
+def payouts_refresh(request: Request, conn: sqlite3.Connection = Depends(db), u: dict | None = Depends(user)):
+    """Stripe sends the host here when an onboarding link expired: issue a fresh one."""
+    if (g := _host_guard(request, u)):
+        return g
+    acct = row(conn, "SELECT stripe_account_id FROM users WHERE id = ?", (u["id"],))
+    if not acct["stripe_account_id"] or not payments.configured():
+        return _redirect("/host/payouts")
+    try:
+        return _redirect(payments.account_onboarding_link(acct["stripe_account_id"], f"{settings.BASE_URL}/host/payouts/refresh", f"{settings.BASE_URL}/host/payouts?connected=1"))
+    except payments.PaymentError as e:
+        return render(request, "host/payouts.html", _payout_ctx(conn, u, str(e)), 502)
+
+
+@router.post("/host/payouts/dashboard")
+def payouts_dashboard(request: Request, conn: sqlite3.Connection = Depends(db), u: dict | None = Depends(user)):
+    if (g := _host_guard(request, u)):
+        return g
+    acct = row(conn, "SELECT stripe_account_id FROM users WHERE id = ?", (u["id"],))
+    if not acct["stripe_account_id"] or not payments.configured():
+        return _redirect("/host/payouts")
+    try:
+        return _redirect(payments.express_dashboard_link(acct["stripe_account_id"]))
+    except payments.PaymentError as e:
+        return render(request, "host/payouts.html", _payout_ctx(conn, u, str(e)), 502)
+
+
+@router.post("/admin/bookings/{booking_id}/paid-manually")
+def admin_mark_paid(request: Request, booking_id: int, conn: sqlite3.Connection = Depends(db), u: dict | None = Depends(user)):
+    if (g := _admin_guard(request, u)):
+        return g
+    conn.execute("UPDATE bookings SET payout_status = 'paid_manually' WHERE id = ? AND payout_status = 'pending'", (booking_id,))
+    return _redirect("/host/payouts")
+
+
 # ---------------------------------------------------------------- admin
 
 
@@ -811,6 +893,8 @@ def admin_home(request: Request, conn: sqlite3.Connection = Depends(db), u: dict
     like = f"%{q}%"
     if tab == "users":
         ctx["users"] = rows(conn, "SELECT * FROM users WHERE name LIKE ? OR email LIKE ? ORDER BY id DESC LIMIT 200", (like, like))
+    elif tab == "payouts":
+        return _redirect("/host/payouts")
     elif tab == "listings":
         ctx["listings"] = rows(conn, LISTING_CARD_SQL + " WHERE l.title LIKE ? OR l.city LIKE ? ORDER BY l.id DESC LIMIT 200", (like, like))
     elif tab == "bookings":

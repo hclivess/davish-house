@@ -89,12 +89,15 @@ def start_checkout(conn: sqlite3.Connection, booking_id: int, guest_email: str, 
     if not b or b["status"] != "awaiting_payment":
         raise BookingError(_("This booking is not awaiting payment."))
     listing = get_listing(conn, b["listing_id"])
+    host = row(conn, "SELECT stripe_account_id, stripe_payouts_enabled FROM users WHERE id = ?", (listing["host_id"],))
+    destination = host["stripe_account_id"] if host and host["stripe_payouts_enabled"] else ""
     try:
-        s = payments.create_checkout_session(b, listing, guest_email, base_url)
+        s = payments.create_checkout_session(b, listing, guest_email, base_url, destination)
     except payments.PaymentError as e:
         raise BookingError(_("Payment could not be started: %s") % e) from e
-    conn.execute("UPDATE bookings SET stripe_session_id = ?, stripe_payment_intent = COALESCE(?, stripe_payment_intent) WHERE id = ?",
-                 (s["id"], s["payment_intent"], booking_id))
+    conn.execute("""UPDATE bookings SET stripe_session_id = ?, stripe_payment_intent = COALESCE(?, stripe_payment_intent),
+                    stripe_destination = ?, payout_status = ? WHERE id = ?""",
+                 (s["id"], s["payment_intent"], destination, "automatic" if destination else "pending", booking_id))
     return s["url"]
 
 
@@ -190,7 +193,7 @@ def cancel(conn: sqlite3.Connection, booking_id: int, user_id: int, now: datetim
             if b["status"] == "pending":          # only authorized: release the hold
                 payments.release(pi)
             elif refund_cents:
-                payments.refund(pi, None if fraction >= 1.0 else refund_cents)
+                payments.refund(pi, None if fraction >= 1.0 else refund_cents, connected=bool(b.get("stripe_destination")))
     except payments.PaymentError as e:
         raise BookingError(_("Stripe error: %s") % e) from e
     conn.execute("UPDATE bookings SET refund_cents = ? WHERE id = ?", (refund_cents, booking_id))
@@ -242,6 +245,11 @@ def handle_webhook_event(conn: sqlite3.Connection, event: dict) -> str:
             conn.execute("UPDATE bookings SET payment_status = 'refunded', refund_cents = ? WHERE stripe_payment_intent = ?",
                          (obj.get("amount_refunded", 0), pi))
             return f"refund recorded for {pi}"
+    elif kind == "account.updated":
+        acct = obj.get("id")
+        if acct:
+            conn.execute("UPDATE users SET stripe_payouts_enabled = ? WHERE stripe_account_id = ?", (1 if obj.get("payouts_enabled") else 0, acct))
+            return f"account {acct} payouts_enabled={bool(obj.get('payouts_enabled'))}"
     elif kind == "charge.dispute.created":
         pi = obj.get("payment_intent")
         if pi:

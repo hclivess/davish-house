@@ -252,3 +252,4 @@ input[type=file]::file-selector-button:hover { background: var(--gold); color: #
 .how-grid > div > .num { vertical-align: middle; margin: 0 12px 0 0; width: 36px; height: 36px; font-size: 1rem; }
 .how-grid > div > strong { display: inline-block; vertical-align: middle; font-size: 1.05rem; line-height: 36px; }
 .how-grid > div > p { margin-top: 10px; }
+.payout-box { background: #222; border: 1px solid #333; border-radius: 16px; padding: 22px; margin: 16px 0 24px; } .payout-box h2 { margin-top: 0; }

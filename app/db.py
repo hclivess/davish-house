@@ -28,6 +28,8 @@ CREATE TABLE IF NOT EXISTS users (
     bio           TEXT NOT NULL DEFAULT '',
     phone         TEXT NOT NULL DEFAULT '',
     avatar_url    TEXT NOT NULL DEFAULT '',
+    stripe_account_id TEXT NOT NULL DEFAULT '',        -- Stripe Connect Express account (acct_...)
+    stripe_payouts_enabled INTEGER NOT NULL DEFAULT 0, -- onboarding complete and payouts active
     created_at    TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M', 'now'))
 );
 
@@ -154,6 +156,8 @@ CREATE TABLE IF NOT EXISTS bookings (
     stripe_payment_intent TEXT,
     refund_cents       INTEGER NOT NULL DEFAULT 0,
     extra_guest_cents  INTEGER NOT NULL DEFAULT 0,
+    stripe_destination TEXT NOT NULL DEFAULT '',   -- connected account the payout was routed to ('' = platform account, manual payout)
+    payout_status      TEXT NOT NULL DEFAULT 'pending',  -- pending | automatic | paid_manually
     created_at         TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M', 'now'))
 );
 CREATE INDEX IF NOT EXISTS idx_bookings_listing_time ON bookings(listing_id, start_at, end_at);
@@ -230,6 +234,10 @@ MIGRATIONS = [
     ("listings", "included_guests", "ALTER TABLE listings ADD COLUMN included_guests INTEGER NOT NULL DEFAULT 0"),
     ("listings", "extra_guest_fee_cents", "ALTER TABLE listings ADD COLUMN extra_guest_fee_cents INTEGER NOT NULL DEFAULT 0"),
     ("bookings", "extra_guest_cents", "ALTER TABLE bookings ADD COLUMN extra_guest_cents INTEGER NOT NULL DEFAULT 0"),
+    ("users", "stripe_account_id", "ALTER TABLE users ADD COLUMN stripe_account_id TEXT NOT NULL DEFAULT ''"),
+    ("users", "stripe_payouts_enabled", "ALTER TABLE users ADD COLUMN stripe_payouts_enabled INTEGER NOT NULL DEFAULT 0"),
+    ("bookings", "stripe_destination", "ALTER TABLE bookings ADD COLUMN stripe_destination TEXT NOT NULL DEFAULT ''"),
+    ("bookings", "payout_status", "ALTER TABLE bookings ADD COLUMN payout_status TEXT NOT NULL DEFAULT 'pending'"),
     ("users", "is_admin", "ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0"),
     ("users", "is_banned", "ALTER TABLE users ADD COLUMN is_banned INTEGER NOT NULL DEFAULT 0"),
     ("users", "bio", "ALTER TABLE users ADD COLUMN bio TEXT NOT NULL DEFAULT ''"),

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Payouts') }}{% endblock %}
+{% block content %}
+<div class="listing-head"><h1>{{ _('Payouts') }}{% if all_hosts %} <span class="muted small">· {{ _('all hosts (admin)') }}</span>{% endif %}</h1>
+  <div class="actions"><a class="btn btn-ghost" href="/host">{{ _('Hosting dashboard') }}</a></div></div>
+{% if error %}<div class="alert alert-error">{{ error }}</div>{% endif %}
+{% if just_returned and acct.stripe_payouts_enabled %}<div class="alert alert-ok">{{ _('Your bank account is connected. Payouts are now automatic.') }}</div>{% endif %}
+
+<section class="payout-box">
+  <h2>{{ _('How you get paid') }}</h2>
+  {% if not stripe %}
+    <p class="muted">{{ _('Card payments are not configured on this platform yet. Bookings are recorded and paid out manually by the administrator.') }}</p>
+  {% elif acct.stripe_payouts_enabled %}
+    <p><span class="status status-confirmed">{{ _('Automatic') }}</span> {{ _('Every confirmed booking is paid to your bank account by Stripe, daily.') }}</p>
+    <form method="post" action="/host/payouts/dashboard" class="inline"><button class="btn btn-ghost">{{ _('Open Stripe payout dashboard') }}</button></form>
+  {% elif acct.stripe_account_id %}
+    <p><span class="status status-pending">{{ _('Incomplete') }}</span> {{ _('Stripe still needs some information before payouts can start.') }}
+      {% if status and status.requirements %}<span class="muted small">({{ status.requirements | join(', ') }})</span>{% endif %}</p>
+    <form method="post" action="/host/payouts/connect" class="inline"><button class="btn">{{ _('Continue setup') }}</button></form>
+  {% else %}
+    <p class="muted">{{ _('Connect your bank account once and every booking is paid out to you automatically. Stripe verifies your identity and CLABE; it takes about five minutes.') }}</p>
+    <form method="post" action="/host/payouts/connect" class="inline"><button class="btn">{{ _('Connect payouts') }}</button></form>
+    <p class="muted small">{{ _('Until then, the administrator pays you by bank transfer for each completed booking.') }}</p>
+  {% endif %}
+</section>
+
+<h2>{{ _('Booking payouts') }} <span class="muted small">· {{ _('total') }} {{ total_cents | money }}</span></h2>
+{% for p in payouts %}
+<a class="row" href="/bookings/{{ p.id }}">
+  <div class="row-body"><strong>{{ p.listing_title }}</strong><div class="muted small">{% if all_hosts %}{{ p.host_name }} · {% endif %}{{ p.guest_name }} · {{ p.start_at | fdate }} {{ p.start_at | ftime }} → {{ p.end_at | fdate }} {{ p.end_at | ftime }} · <span class="status status-{{ p.status }}">{{ _(p.status) }}</span></div></div>
+  <div class="row-end"><strong>{{ p.host_payout_cents | money }}</strong>
+    <div class="small">{% if p.payout_status == 'automatic' %}<span class="ok">{{ _('automatic (Stripe)') }}</span>{% elif p.payout_status == 'paid_manually' %}<span class="ok">{{ _('paid by transfer') }}</span>{% else %}<span class="muted">{{ _('manual payout pending') }}</span>
+      {% if user.is_admin %}<form method="post" action="/admin/bookings/{{ p.id }}/paid-manually" class="inline" onclick="event.stopPropagation()"><button class="btn btn-sm btn-ghost">{{ _('Mark paid') }}</button></form>{% endif %}{% endif %}</div></div>
+</a>
+{% else %}<p class="muted">{{ _('No payouts yet.') }}</p>{% endfor %}
+{% endblock %}

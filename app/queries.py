@@ -82,6 +82,15 @@ def public_profile(conn: sqlite3.Connection, user_id: int) -> dict | None:
     return u
 
 
+def host_payouts(conn: sqlite3.Connection, host_id: int | None) -> list[dict]:
+    """Confirmed/completed bookings with their payout amount and route (for a host, or all hosts when None)."""
+    return rows(conn, """SELECT b.id, b.start_at, b.end_at, b.host_payout_cents, b.total_cents, b.status, b.payment_status, b.payout_status,
+                                b.stripe_destination, l.title AS listing_title, l.host_id, h.name AS host_name, g.name AS guest_name
+                         FROM bookings b JOIN listings l ON l.id = b.listing_id JOIN users h ON h.id = l.host_id JOIN users g ON g.id = b.guest_id
+                         WHERE b.status IN ('confirmed','completed') AND (? IS NULL OR l.host_id = ?) ORDER BY b.start_at DESC LIMIT 300""",
+                (host_id, host_id))
+
+
 def admin_overview(conn: sqlite3.Connection) -> dict:
     return {
         "users": row(conn, "SELECT COUNT(*) AS n, SUM(is_host) AS hosts, SUM(is_banned) AS banned FROM users"),

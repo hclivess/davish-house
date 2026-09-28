@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ _('Hosting') }}{% endblock %}
 {% block content %}
-<div class="listing-head"><h1>{{ _('Hosting dashboard') }}{% if all_hosts %} <span class="muted small">· {{ _('all hosts (admin)') }}</span>{% endif %}</h1><a class="btn" href="/host/listings/new">+ {{ _('New listing') }}</a></div>
+<div class="listing-head"><h1>{{ _('Hosting dashboard') }}{% if all_hosts %} <span class="muted small">· {{ _('all hosts (admin)') }}</span>{% endif %}</h1><div class="actions"><a class="btn btn-ghost" href="/host/payouts">{{ _('Payouts') }}</a><a class="btn" href="/host/listings/new">+ {{ _('New listing') }}</a></div></div>
 <div class="stats">
   <div><span class="muted small">{{ _('Earnings') }}</span><strong>{{ stats.earnings_cents | money }}</strong></div>
   <div><span class="muted small">{{ _('Hours booked') }}</span><strong>{{ '%g' % stats.hours_booked }}</strong></div>

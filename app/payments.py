@@ -32,8 +32,53 @@ def configured() -> bool:
     return bool(SECRET_KEY)
 
 
-def create_checkout_session(booking: dict, listing: dict, guest_email: str, base_url: str) -> dict:
-    """Returns {"id": session_id, "url": hosted_checkout_url, "payment_intent": pi_id | None}."""
+CONNECT_COUNTRY = os.environ.get("STRIPE_CONNECT_COUNTRY", "MX")
+
+
+# ---- Stripe Connect (Express): hosts onboard once, then every booking pays them out automatically.
+
+def create_connect_account(email: str, name: str) -> str:
+    try:
+        acct = stripe.Account.create(
+            type="express", country=CONNECT_COUNTRY, email=email,
+            capabilities={"card_payments": {"requested": True}, "transfers": {"requested": True}},
+            business_profile={"name": name, "product_description": "Apartment rentals by the hour"},
+            settings={"payouts": {"schedule": {"interval": "daily"}}},
+        )
+    except stripe.error.StripeError as e:  # type: ignore[attr-defined]
+        raise PaymentError(str(e.user_message or e)) from e
+    return acct.id
+
+
+def account_onboarding_link(account_id: str, refresh_url: str, return_url: str) -> str:
+    try:
+        link = stripe.AccountLink.create(account=account_id, refresh_url=refresh_url, return_url=return_url, type="account_onboarding")
+    except stripe.error.StripeError as e:  # type: ignore[attr-defined]
+        raise PaymentError(str(e.user_message or e)) from e
+    return link.url
+
+
+def account_status(account_id: str) -> dict:
+    """{"payouts_enabled": bool, "charges_enabled": bool, "details_submitted": bool, "requirements": [...]}"""
+    try:
+        a = stripe.Account.retrieve(account_id)
+    except stripe.error.StripeError as e:  # type: ignore[attr-defined]
+        raise PaymentError(str(e)) from e
+    req = getattr(a, "requirements", None)
+    return {"payouts_enabled": bool(a.payouts_enabled), "charges_enabled": bool(a.charges_enabled),
+            "details_submitted": bool(a.details_submitted), "requirements": list(getattr(req, "currently_due", []) or [])}
+
+
+def express_dashboard_link(account_id: str) -> str:
+    try:
+        return stripe.Account.create_login_link(account_id).url
+    except stripe.error.StripeError as e:  # type: ignore[attr-defined]
+        raise PaymentError(str(e)) from e
+
+
+def create_checkout_session(booking: dict, listing: dict, guest_email: str, base_url: str, destination_account: str = "") -> dict:
+    """Returns {"id": session_id, "url": hosted_checkout_url, "payment_intent": pi_id | None}.
+    With destination_account the charge is split: host_payout goes to the connected account, the rest stays as platform fee."""
     manual = not listing["instant_book"]
     line_items = [{
         "price_data": {"currency": CURRENCY, "unit_amount": booking["subtotal_cents"],
@@ -60,6 +105,12 @@ def create_checkout_session(booking: dict, listing: dict, guest_email: str, base
     params.pop("expires_at")
     if manual:
         params["payment_intent_data"]["capture_method"] = "manual"
+    if destination_account:
+        params["payment_intent_data"]["transfer_data"] = {"destination": destination_account}
+        fee = booking["total_cents"] - booking["host_payout_cents"]
+        if fee > 0:
+            params["payment_intent_data"]["application_fee_amount"] = fee
+        params["payment_intent_data"]["on_behalf_of"] = destination_account
     try:
         s = stripe.checkout.Session.create(**params)
     except stripe.error.StripeError as e:  # type: ignore[attr-defined]
@@ -92,11 +143,15 @@ def release(payment_intent_id: str) -> None:
         raise PaymentError(str(e)) from e
 
 
-def refund(payment_intent_id: str, amount_cents: int | None = None) -> None:
+def refund(payment_intent_id: str, amount_cents: int | None = None, connected: bool = False) -> None:
+    """Refund the guest. For Connect charges the host's share and the platform fee are pulled back proportionally."""
     try:
         kwargs = {"payment_intent": payment_intent_id}
         if amount_cents is not None:
             kwargs["amount"] = amount_cents
+        if connected:
+            kwargs["reverse_transfer"] = True
+            kwargs["refund_application_fee"] = True
         stripe.Refund.create(**kwargs)
     except stripe.error.StripeError as e:  # type: ignore[attr-defined]
         raise PaymentError(str(e)) from e

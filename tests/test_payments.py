@@ -16,7 +16,7 @@ class FakeStripe:
         self.sessions, self.captured, self.released, self.refunds = {}, [], [], []
         self.n = 0
 
-    def create_checkout_session(self, booking, listing, email, base_url):
+    def create_checkout_session(self, booking, listing, email, base_url, destination_account=""):
         self.n += 1
         sid, pi = f"cs_test_{self.n}", f"pi_test_{self.n}"
         self.sessions[sid] = {"payment_status": "unpaid", "status": "open", "payment_intent": pi, "manual": not listing["instant_book"]}
@@ -27,7 +27,7 @@ class FakeStripe:
 
     def capture(self, pi): self.captured.append(pi)
     def release(self, pi): self.released.append(pi)
-    def refund(self, pi, amount_cents=None): self.refunds.append((pi, amount_cents))
+    def refund(self, pi, amount_cents=None, connected=False): self.refunds.append((pi, amount_cents))
 
     def complete(self, sid):
         s = self.sessions[sid]

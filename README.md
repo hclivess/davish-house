@@ -21,7 +21,7 @@ journalctl -u davish -f          # logs (password-reset emails land here until S
 
 **Enable Stripe payments**
 1. In the Stripe dashboard copy the secret key (`sk_live_…` or `sk_test_…`) into `STRIPE_SECRET_KEY` in `/etc/davish/env`.
-2. Developers → Webhooks → add endpoint `http://208.87.242.141/stripe/webhook` (or your https domain) with events `checkout.session.completed`, `checkout.session.expired`, `charge.refunded`, `charge.dispute.created`; copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
+2. Developers → Webhooks → add endpoint `http://208.87.242.141/stripe/webhook` (or your https domain) with events `checkout.session.completed`, `checkout.session.expired`, `charge.refunded`, `charge.dispute.created`, `account.updated`; copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
 3. `systemctl restart davish`. Until the key is set the site runs in simulated-payment mode and says so on every booking page.
 
 How money moves: instant-book listings are charged when Stripe Checkout completes. Request-to-book listings only authorize the card; the charge is captured when the host accepts and released when they decline. The slot is held for 30 minutes while the guest pays, then released. Cancellations 24h+ before start (or by the host) refund in full through Stripe. Payments land in the platform's Stripe account; host payouts are tracked per booking (`host_payout_cents`) and paid out manually until Stripe Connect is added.
@@ -62,6 +62,8 @@ Tests: `.venv/bin/python -m pytest`.
 
 **Payments**: Stripe Checkout; authorise-then-capture for requests; refunds per policy; webhooks; 30-minute payment hold on the slot. Simulated mode until keys are set.
 
+**Host payouts (Stripe Connect Express)**: a host clicks *Conectar pagos* on Anfitrión → Pagos, completes Stripe's hosted onboarding (identity + CLABE, about five minutes), and from then on every booking is charged with the host's share transferred to their connected account and paid out daily; the platform keeps the configured fee. Refunds reverse the transfer. Hosts who haven't connected are paid manually: the admin sees pending payouts on the same page and marks them paid. Enable Connect once in the Stripe dashboard and add the `account.updated` event to the webhook.
+
 **Notifications**: email on booking confirmed / requested / accepted / declined / cancelled and on new messages (host and guest), password reset, welcome. Logged to the journal until SMTP is configured.
 
 **Languages**: Spanish (default) and English, switchable in the header; every string, message and email is translated (enforced by a test).
@@ -94,7 +96,6 @@ tests/             availability rules, booking lifecycle, HTTP flows
 
 ## Not yet real (next steps)
 
-- **Stripe Connect** for automatic host payouts (today the platform account collects and hosts are paid manually).
 - **Email verification / ID verification** and **maps / geosearch** are not built yet.
 - **Stripe Connect** for automatic host payouts.
 - **Photos** are stored on local disk under `/var/lib/davish/uploads`; move to S3 when you scale to several servers.
