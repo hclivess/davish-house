@@ -3,9 +3,9 @@
 {% block content %}
 {% include "_searchbar.html" %}
 <div class="filters">
-  <a class="pill {{ 'active' if q.bedrooms == '' }}" href="/search?{{ dict(q, bedrooms='') | urlencode }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">{{ _('Any size') }}</a>
-  {% for key, c in SIZES.items() %}<a class="pill {{ 'active' if q.bedrooms == key }}" href="/search?{{ dict(q, bedrooms=key) | urlencode }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">{{ c.icon }} {{ _(c.label) }}</a>{% endfor %}
-  <a class="pill {{ 'active' if q.instant }}" href="/search?{{ dict(q, instant='' if q.instant else 1) | urlencode }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">⚡ {{ _('Instant booking') }}</a>
+  <a class="pill {{ 'active' if q.bedrooms == '' }}" href="/search?{{ qs(q, bedrooms='') }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">{{ _('Any size') }}</a>
+  {% for key, c in SIZES.items() %}<a class="pill {{ 'active' if q.bedrooms == key }}" href="/search?{{ qs(q, bedrooms=key) }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">{{ c.icon }} {{ _(c.label) }}</a>{% endfor %}
+  <a class="pill {{ 'active' if q.instant }}" href="/search?{{ qs(q, instant='' if q.instant else 1) }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">⚡ {{ _('Instant booking') }}</a>
   <details class="dropdown"><summary class="pill {{ 'active' if amenities }}">{{ _('Amenities') }}{% if amenities %} ({{ amenities | length }}){% endif %}</summary>
     <form method="get" action="/search" class="dropdown-body">
       {% for k, v in q.items() if v != '' %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endfor %}

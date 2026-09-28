@@ -172,3 +172,13 @@ def test_signup_and_account(client):
     assert r.status_code == 303
     me = client.get("/api/me").json()
     assert me["bio"] == "Hi there" and me["avatar_url"].startswith("/uploads/0/")
+
+
+def test_search_tolerates_empty_query_params(client):
+    r = client.get("/search?capacity=&max_rate=&min_rate=&instant=&bedrooms=0&date=&start=&end_date=&end=")
+    assert r.status_code == 200 and "Studio</h3>" in r.text
+    # Filter links rendered by the page must not carry empty parameters.
+    html = client.get("/search").text
+    assert "capacity=&" not in html and "max_rate=&" not in html
+    for href in __import__("re").findall(r'class="pill[^"]*" href="([^"]+)"', html):
+        assert client.get(href.replace("&amp;", "&")).status_code == 200, href

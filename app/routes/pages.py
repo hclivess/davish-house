@@ -47,6 +47,13 @@ def default_window(tz: str | None = None, hours: int | None = None, notice_hours
             "end_date": end.strftime("%Y-%m-%d"), "end": end.strftime("%H:%M")}
 
 
+def _int(value: str, default: int) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
 def _window_from_query(date_: str, start: str, end_date: str, end: str) -> tuple[str, str]:
     """Compose check-in / check-out ISO strings from the four search fields. Empty strings when incomplete."""
     if not (date_ and start and end):
@@ -70,10 +77,11 @@ def home(request: Request, conn: sqlite3.Connection = Depends(db), u: dict | Non
 @router.get("/search", response_class=HTMLResponse)
 def search(
     request: Request, conn: sqlite3.Connection = Depends(db), u: dict | None = Depends(user),
-    city: str = "", bedrooms: int = -1, capacity: int = 0, max_rate: int = 0, min_rate: int = 0,
-    date: str = "", start: str = "", end_date: str = "", end: str = "", instant: int = 0, sort: str = "recommended",
+    city: str = "", bedrooms: str = "", capacity: str = "", max_rate: str = "", min_rate: str = "",
+    date: str = "", start: str = "", end_date: str = "", end: str = "", instant: str = "", sort: str = "recommended",
 ):
     booking_svc.complete_past(conn)
+    bedrooms, capacity, max_rate, min_rate, instant = (_int(bedrooms, -1), _int(capacity, 0), _int(max_rate, 0), _int(min_rate, 0), _int(instant, 0))
     amenities = [a for a in request.query_params.getlist("amenity") if a in AMENITIES]
     if not date and not start and not end:
         d = default_window()

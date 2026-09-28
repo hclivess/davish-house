@@ -58,6 +58,15 @@ def _price_label(l: dict) -> str:
 
 
 templates.env.filters["price_label"] = _price_label
+
+
+def _qs(q: dict, **over) -> str:
+    from urllib.parse import urlencode
+    merged = {**(q or {}), **over}
+    return urlencode({k: v for k, v in merged.items() if v not in ("", None)})
+
+
+templates.env.globals["qs"] = _qs
 templates.env.globals["CURRENCY"] = settings.CURRENCY
 templates.env.globals["DEFAULT_STAY_HOURS"] = settings.DEFAULT_STAY_HOURS
 templates.env.globals["PHONE"] = settings.PHONE
