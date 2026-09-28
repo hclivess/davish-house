@@ -5,10 +5,12 @@
   <div class="hero-text">
     <h1>{{ _('Apartments with hourly precision.') }} {{ _('Stay two hours or two weeks.') }}</h1>
     <p class="lead">{{ _('Check in and out at any hour and pay only for the time you use.') }}</p>
+    <div class="hero-badges"><span>✓ {{ _('No deposit') }}</span><span>✓ {{ _('No guarantor') }}</span><span>✓ {{ _('Netflix included') }}</span></div>
   </div>
 </section>
 <div class="hero-search">{% include "_searchbar.html" %}</div>
 
+<img class="divider" src="/static/img/divider.svg" alt="">
 <section class="section">
   <div class="section-head"><h2>{{ _('Whatever the moment, there is an apartment for it') }}</h2></div>
   <div class="tiles">
@@ -22,14 +24,14 @@
 <section class="section">
   <div class="section-head"><h2>{{ _('Browse by size') }}</h2><a href="/search">{{ _('Explore') }}</a></div>
   <div class="tiles tiles-wide">
-    {% for key, c in SIZES.items() %}<a class="tile" href="/search?bedrooms={{ key }}"><div class="tile-img" style="background-image:url('/static/img/size-{{ key }}.jpg')"></div><strong>{{ _(c.label) }}</strong><small>{{ _(c.blurb) }}</small></a>{% endfor %}
+    {% set size_img = {0: 'depa-51', 1: 'depa-57', 2: 'depa-chicxulub', 3: 'depa-54'} %}{% for key, c in SIZES.items() %}<a class="tile" href="/search?bedrooms={{ key }}"><div class="tile-img" style="background-image:url('/static/img/{{ size_img[key] }}.jpg')"></div><strong>{{ _(c.label) }}</strong><small>{{ _(c.blurb) }}</small></a>{% endfor %}
   </div>
 </section>
 
 {% if cities %}
 <section class="section">
   <div class="section-head"><h2>{{ _('Popular cities') }}</h2></div>
-  <div class="tiles tiles-wide">{% for c in cities %}<a class="tile" href="/search?city={{ c.city }}"><div class="tile-img" style="background-image:url('/static/img/city-{{ loop.index0 % 6 }}.jpg')"></div><strong>{{ c.city }}</strong><small>{{ c.n }} {{ _('apartment') if c.n == 1 else _('apartments') }}</small></a>{% endfor %}</div>
+  <div class="tiles tiles-wide">{% for c in cities %}<a class="tile" href="/search?city={{ c.city }}"><div class="tile-img" style="background-image:url('/static/img/{{ 'depa-chicxulub' if 'Chicxulub' in c.city else 'depa-54' }}.jpg')"></div><strong>{{ c.city }}</strong><small>{{ c.n }} {{ _('apartment') if c.n == 1 else _('apartments') }}</small></a>{% endfor %}</div>
 </section>
 {% endif %}
 
@@ -40,13 +42,14 @@
 </section>
 {% endif %}
 
+<img class="divider" src="/static/img/divider.svg" alt="">
 <section class="section owner">
   <img src="/static/img/davish-profile.jpg" alt="Alejandro Davish" class="owner-photo">
   <div>
     <h2>Alejandro Davish</h2>
     <p class="muted">{{ _('Founder & owner') }}</p>
     <p>{{ _('Furnished, fully equipped apartments in Mérida and on the beach in Chicxulub Puerto. No deposit, no guarantor, no hassle. Every apartment has a Smart TV with Netflix, fast Wi-Fi, air conditioning, pool and parking.') }}</p>
-    {% if WHATSAPP %}<a class="btn btn-ghost" href="https://wa.me/{{ WHATSAPP }}" target="_blank" rel="noopener">💬 {{ _('Chat on WhatsApp') }}</a>{% endif %}
+    {% if WHATSAPP %}<a class="btn wa" href="https://wa.me/{{ WHATSAPP }}" target="_blank" rel="noopener">💬 {{ _('Chat on WhatsApp') }}</a>{% endif %}
   </div>
 </section>
 
@@ -59,7 +62,7 @@
   </div>
 </section>
 
-<section class="host-cta" style="background-image:url('/static/img/host-wide.jpg')">
+<section class="host-cta" style="background-image:url('/static/img/depa-54.jpg')">
   <div class="host-cta-card">
     <h2>{{ _('Your apartment earns while you are out') }}</h2>
     <p>{{ _('List it once, set your hourly and daily rates, block the hours you need, and let guests book the rest. Cleaning buffers, calendar rules and payouts are handled for you.') }}</p>
