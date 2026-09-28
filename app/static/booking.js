@@ -56,12 +56,12 @@
       el.classList.toggle('sel-start', d === a); el.classList.toggle('sel-end', d === b);
     });
   }
-  let pickingEnd = false;
+  let pickingEnd = false, keptEndTime = null;
   if (strip) strip.addEventListener('click', e => {
     const el = e.target.closest('.cal-day'); if (!el || el.classList.contains('busy')) return;
-    const d = el.dataset.date, st = (startIn.value || '').slice(11) || '10:00', et = (endIn.value || '').slice(11) || st;
-    if (!pickingEnd || d < (startIn.value || '').slice(0, 10)) { startIn.value = `${d}T${st}`; pickingEnd = true; }
-    else { endIn.value = `${d}T${et}`; pickingEnd = false; }
+    const d = el.dataset.date, st = (startIn.value || '').slice(11) || '10:00';
+    if (!pickingEnd || d < (startIn.value || '').slice(0, 10)) { keptEndTime = (endIn.value || '').slice(11) || st; startIn.value = `${d}T${st}`; pickingEnd = true; }
+    else { endIn.value = `${d}T${keptEndTime || st}`; pickingEnd = false; }
     if (endIn.value <= startIn.value) { const x = new Date(startIn.value); x.setHours(x.getHours() + Math.max(2, minH)); const p = n => String(n).padStart(2, '0'); endIn.value = `${x.getFullYear()}-${p(x.getMonth() + 1)}-${p(x.getDate())}T${p(x.getHours())}:00`; }
     update();
   });
