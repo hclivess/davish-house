@@ -21,4 +21,4 @@ def test_home_and_search_prefill_window(client):
         html = client.get("/?lang=en").text
         assert 'name="date" min="2026-10-02" value="2026-10-02"' in html and 'name="start" step="3600" value="11:00"' in html
         html = client.get("/search").text
-        assert 'value="11:00"' in html and 'value="13:00"' in html and "available from" in html
+        assert 'value="11:00"' in html and 'value="13:00"' in html and "Pick a check-in" in html   # prefilled, unfiltered
