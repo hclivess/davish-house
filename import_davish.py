@@ -96,7 +96,7 @@ def main() -> None:
         data = {
             "host_id": host["id"], "title": title, "description": description, "category": "apartment", "city": city, "neighborhood": hood,
             "address": address, "capacity": capacity, "hourly_rate_cents": hourly, "daily_rate_cents": pday * 100, "monthly_rate_cents": pmonth * 100,
-            "cleaning_fee_cents": 0, "min_hours": 4 if p4 else 24, "max_hours": 24 * 90, "buffer_minutes": 60, "instant_book": 1, "timezone": "America/Merida",
+            "cleaning_fee_cents": 0, "min_hours": 4 if p4 else 24, "max_hours": 24 * 90, "buffer_minutes": 60, "instant_book": 0, "timezone": "America/Merida",
             "checkin_from": "00:00", "checkin_until": "24:00", "checkout_from": "00:00", "checkout_until": "24:00",
             "bedrooms": bedrooms, "bathrooms": baths, "beds": beds, "house_rules": HOUSE_RULES_ES, "checkin_instructions": CHECKIN_ES,
             "advance_notice_hours": 1, "max_advance_days": 365, "cancellation_policy": "two_days", "included_guests": included,
