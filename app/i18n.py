@@ -272,7 +272,7 @@ ES.update({
 ES.update({"Founder & owner": "Fundador y propietario", "Hola, me interesa": "Hola, me interesa",
     "Furnished, fully equipped apartments in Mérida and on the beach in Chicxulub Puerto. No deposit, no guarantor, no hassle. Every apartment has a Smart TV with Netflix, fast Wi-Fi, air conditioning, pool and parking.":
     "Departamentos amueblados y equipados en Mérida y en la playa de Chicxulub Puerto. Sin depósito, sin aval, sin complicaciones. Todos tienen Smart TV con Netflix, Wi-Fi rápido, aire acondicionado, alberca y estacionamiento.",
-    "Netflix included": "Netflix incluido", "Our apartments": "Nuestros departamentos", "Pick a check-in and check-out and search to see availability.": "Elige entrada y salida y busca para ver la disponibilidad.", "all": "todos", "cap per 30 days": "tope por 30 días", "/ month": "/ mes", "Price per day for the minimum stay. Partially booked days still have free hours.": "Precio por día para la estancia mínima. Los días parcialmente reservados aún tienen horas libres."})
+    "Netflix included": "Netflix incluido", "all hosts (admin)": "todos los anfitriones (admin)", "Our apartments": "Nuestros departamentos", "Pick a check-in and check-out and search to see availability.": "Elige entrada y salida y busca para ver la disponibilidad.", "all": "todos", "cap per 30 days": "tope por 30 días", "/ month": "/ mes", "Price per day for the minimum stay. Partially booked days still have free hours.": "Precio por día para la estancia mínima. Los días parcialmente reservados aún tienen horas libres."})
 EN_LABELS.update({"policy_two_days": "full refund until 2 days before check-in, 50% until 1 day before", "two_days": "2 days"})
 
 CATALOG = {"es": ES}

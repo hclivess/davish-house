@@ -29,6 +29,11 @@ def _utc_stamp(dt: datetime | None = None) -> str:
     return (dt or datetime.utcnow()).strftime("%Y-%m-%dT%H:%M")
 
 
+def _is_admin(conn: sqlite3.Connection, user_id: int) -> bool:
+    r = row(conn, "SELECT is_admin FROM users WHERE id = ?", (user_id,))
+    return bool(r and r["is_admin"])
+
+
 def get_listing(conn: sqlite3.Connection, listing_id: int) -> dict | None:
     return row(conn, "SELECT * FROM listings WHERE id = ?", (listing_id,))
 
@@ -141,7 +146,7 @@ def _set_status(conn: sqlite3.Connection, booking_id: int, status: str, payment_
 
 def host_respond(conn: sqlite3.Connection, booking_id: int, host_id: int, accept: bool) -> dict:
     b = get_booking(conn, booking_id)
-    if not b or b["host_id"] != host_id:
+    if not b or (b["host_id"] != host_id and not _is_admin(conn, host_id)):
         raise BookingError(_("Booking not found."))
     if b["status"] != "pending":
         raise BookingError(_("Only pending requests can be accepted or declined."))
@@ -163,8 +168,10 @@ def host_respond(conn: sqlite3.Connection, booking_id: int, host_id: int, accept
 
 def cancel(conn: sqlite3.Connection, booking_id: int, user_id: int, now: datetime | None = None) -> dict:
     b = get_booking(conn, booking_id)
-    if not b or user_id not in (b["guest_id"], b["host_id"]):
+    if not b or (user_id not in (b["guest_id"], b["host_id"]) and not _is_admin(conn, user_id)):
         raise BookingError(_("Booking not found."))
+    if user_id not in (b["guest_id"], b["host_id"]):
+        user_id = b["host_id"]   # admin acts as the host
     now = now or local_now(b["timezone"])
     if b["status"] not in ACTIVE:
         raise BookingError(_("This booking can no longer be cancelled."))

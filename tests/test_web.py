@@ -187,3 +187,20 @@ def test_search_tolerates_empty_query_params(client):
     assert "capacity=&" not in html and "max_rate=&" not in html
     for href in __import__("re").findall(r'class="pill[^"]*" href="([^"]+)"', html):
         assert client.get(href.replace("&amp;", "&")).status_code == 200, href
+
+
+def test_admin_manages_every_listing_from_host_tools(client):
+    login(client, "admin@t.com")
+    html = client.get("/host").text
+    assert "Studio</a>" in html and "Boardroom</a>" in html and "admin" in html
+    assert client.get("/host/listings/1/edit").status_code == 200
+    assert client.get("/host/listings/1/calendar").status_code == 200
+    r = client.post("/host/listings/1/blocks", data={"start_at": f"{D}T00:00", "end_at": f"{D}T04:00"}, follow_redirects=False)
+    assert r.status_code == 303
+    assert "Host" in client.get("/api/listings/1").json()["host_name"]   # ownership unchanged
+    # Admin can accept a request on someone else's listing.
+    client.post("/logout"); login(client)
+    bid = client.post("/api/bookings", json={"listing_id": 2, "start_at": f"{D2}T10:00", "end_at": f"{D2}T12:00"}).json()["id"]
+    client.post("/logout"); login(client, "admin@t.com")
+    assert client.post(f"/bookings/{bid}/respond", data={"action": "accept"}, follow_redirects=False).status_code == 303
+    assert client.get(f"/api/bookings/{bid}").json()["status"] == "confirmed"

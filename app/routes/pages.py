@@ -175,9 +175,9 @@ def booking_page(request: Request, booking_id: int, conn: sqlite3.Connection = D
     if paid:  # back from Stripe: don't wait for the webhook
         booking_svc.sync_payment(conn, booking_id)
     b = booking_detail(conn, booking_id)
-    if not b or u["id"] not in (b["guest_id"], b["host_id"]):
+    if not b or (u["id"] not in (b["guest_id"], b["host_id"]) and not u.get("is_admin")):
         return render(request, "error.html", {"user": u, "message": "Booking not found."}, 404)
-    return render(request, "booking.html", {"user": u, "b": b, "is_new": bool(new or paid), "is_host": u["id"] == b["host_id"],
+    return render(request, "booking.html", {"user": u, "b": b, "is_new": bool(new or paid), "is_host": u["id"] == b["host_id"] or (u.get("is_admin") and u["id"] != b["guest_id"]),
                                             "payment_cancelled": bool(cancelled), "stripe": payments.configured()})
 
 
@@ -466,6 +466,9 @@ def _host_guard(request: Request, u: dict | None):
 
 
 def _own_listing(conn, u, listing_id):
+    """A host's own listing, or any listing for an admin."""
+    if u.get("is_admin"):
+        return row(conn, "SELECT * FROM listings WHERE id = ?", (listing_id,))
     return row(conn, "SELECT * FROM listings WHERE id = ? AND host_id = ?", (listing_id, u["id"]))
 
 
@@ -482,6 +485,11 @@ def host_dashboard(request: Request, conn: sqlite3.Connection = Depends(db), u: 
     if (g := _host_guard(request, u)):
         return g
     booking_svc.complete_past(conn)
+    if u.get("is_admin"):   # admins manage every listing on the platform
+        listings = rows(conn, LISTING_CARD_SQL + " ORDER BY l.host_id, l.id")
+        return render(request, "host/dashboard.html", {
+            "user": u, "listings": listings, "stats": host_stats(conn, None), "bookings": host_bookings(conn, None)[:12], "all_hosts": True,
+        })
     listings = rows(conn, LISTING_CARD_SQL + " WHERE l.host_id = ? ORDER BY l.id DESC", (u["id"],))
     return render(request, "host/dashboard.html", {
         "user": u, "listings": listings, "stats": host_stats(conn, u["id"]), "bookings": host_bookings(conn, u["id"])[:12],
@@ -493,7 +501,7 @@ def host_bookings_page(request: Request, conn: sqlite3.Connection = Depends(db),
     if (g := _host_guard(request, u)):
         return g
     booking_svc.complete_past(conn)
-    return render(request, "host/bookings.html", {"user": u, "bookings": host_bookings(conn, u["id"], status or None), "status": status})
+    return render(request, "host/bookings.html", {"user": u, "bookings": host_bookings(conn, None if u.get("is_admin") else u["id"], status or None), "status": status})
 
 
 def _listing_form_ctx(conn, u, l=None, error=None):
@@ -593,7 +601,7 @@ def _save_listing(conn, listing_id: int | None, host_id: int, data, amenities) -
             listing_id = cur.lastrowid
         else:
             sets = ", ".join(f"{k} = ?" for k in data)
-            conn.execute(f"UPDATE listings SET {sets} WHERE id = ? AND host_id = ?", (*data.values(), listing_id, host_id))
+            conn.execute(f"UPDATE listings SET {sets} WHERE id = ?", (*data.values(), listing_id))
             conn.execute("DELETE FROM listing_amenities WHERE listing_id = ?", (listing_id,))
         conn.executemany("INSERT INTO listing_amenities (listing_id, amenity) VALUES (?,?)", [(listing_id, a) for a in amenities])
     return listing_id
@@ -700,8 +708,8 @@ def add_block(request: Request, listing_id: int, conn: sqlite3.Connection = Depe
 def delete_block(request: Request, listing_id: int, block_id: int, conn: sqlite3.Connection = Depends(db), u: dict | None = Depends(user)):
     if (g := _host_guard(request, u)):
         return g
-    conn.execute("DELETE FROM availability_blocks WHERE id = ? AND listing_id IN (SELECT id FROM listings WHERE id = ? AND host_id = ?)",
-                 (block_id, listing_id, u["id"]))
+    if _own_listing(conn, u, listing_id):
+        conn.execute("DELETE FROM availability_blocks WHERE id = ? AND listing_id = ?", (block_id, listing_id))
     return _redirect(f"/host/listings/{listing_id}/edit#blocks")
 
 
@@ -779,7 +787,8 @@ async def add_price_rule(request: Request, listing_id: int, conn: sqlite3.Connec
 def delete_price_rule(request: Request, listing_id: int, rule_id: int, conn: sqlite3.Connection = Depends(db), u: dict | None = Depends(user)):
     if (g := _host_guard(request, u)):
         return g
-    conn.execute("DELETE FROM price_rules WHERE id = ? AND listing_id IN (SELECT id FROM listings WHERE id = ? AND host_id = ?)", (rule_id, listing_id, u["id"]))
+    if _own_listing(conn, u, listing_id):
+        conn.execute("DELETE FROM price_rules WHERE id = ? AND listing_id = ?", (rule_id, listing_id))
     return _redirect(f"/host/listings/{listing_id}/calendar#rules")
 
 

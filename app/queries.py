@@ -146,11 +146,12 @@ def user_trips(conn: sqlite3.Connection, user_id: int) -> list[dict]:
     )
 
 
-def host_bookings(conn: sqlite3.Connection, host_id: int, status: str | None = None) -> list[dict]:
+def host_bookings(conn: sqlite3.Connection, host_id: int | None, status: str | None = None) -> list[dict]:
+    """Bookings for one host, or for every host when host_id is None (admin)."""
     sql = """SELECT b.*, l.title AS listing_title, u.name AS guest_name
              FROM bookings b JOIN listings l ON l.id = b.listing_id JOIN users u ON u.id = b.guest_id
-             WHERE l.host_id = ?"""
-    params: list = [host_id]
+             WHERE (? IS NULL OR l.host_id = ?)"""
+    params: list = [host_id, host_id]
     if status:
         sql += " AND b.status = ?"
         params.append(status)
@@ -158,7 +159,7 @@ def host_bookings(conn: sqlite3.Connection, host_id: int, status: str | None = N
     return rows(conn, sql, params)
 
 
-def host_stats(conn: sqlite3.Connection, host_id: int) -> dict:
+def host_stats(conn: sqlite3.Connection, host_id: int | None) -> dict:
     return row(
         conn,
         """SELECT COUNT(*) AS bookings,
@@ -166,6 +167,6 @@ def host_stats(conn: sqlite3.Connection, host_id: int) -> dict:
                   COALESCE(SUM(CASE WHEN b.status = 'awaiting_payment' THEN 1 ELSE 0 END), 0) AS awaiting,
                   COALESCE(SUM(CASE WHEN b.status IN ('confirmed','completed') THEN b.hours END), 0) AS hours_booked,
                   SUM(CASE WHEN b.status = 'pending' THEN 1 ELSE 0 END) AS pending
-           FROM bookings b JOIN listings l ON l.id = b.listing_id WHERE l.host_id = ?""",
-        (host_id,),
+           FROM bookings b JOIN listings l ON l.id = b.listing_id WHERE (? IS NULL OR l.host_id = ?)""",
+        (host_id, host_id),
     ) or {}

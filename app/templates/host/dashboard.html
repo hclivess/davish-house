@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ _('Hosting') }}{% endblock %}
 {% block content %}
-<div class="listing-head"><h1>{{ _('Hosting dashboard') }}</h1><a class="btn" href="/host/listings/new">+ {{ _('New listing') }}</a></div>
+<div class="listing-head"><h1>{{ _('Hosting dashboard') }}{% if all_hosts %} <span class="muted small">· {{ _('all hosts (admin)') }}</span>{% endif %}</h1><a class="btn" href="/host/listings/new">+ {{ _('New listing') }}</a></div>
 <div class="stats">
   <div><span class="muted small">{{ _('Earnings') }}</span><strong>{{ stats.earnings_cents | money }}</strong></div>
   <div><span class="muted small">{{ _('Hours booked') }}</span><strong>{{ '%g' % stats.hours_booked }}</strong></div>
@@ -15,7 +15,7 @@
   <div class="card">
     <a class="card-img" href="/listings/{{ l.id }}" style="background-image:url('{{ l.cover_url or '/static/img/placeholder.jpg' }}')">{% if l.status != 'active' %}<span class="chip chip-light">{{ _('Paused') }}</span>{% endif %}</a>
     <div class="card-body">
-      <h3><a href="/listings/{{ l.id }}">{{ l.title }}</a></h3>
+      <h3><a href="/listings/{{ l.id }}">{{ l.title }}</a></h3>{% if all_hosts %}<div class="muted small">{{ _('Host') }}: <a href="/users/{{ l.host_id }}">{{ l.host_name }}</a></div>{% endif %}
       <div class="muted small">{{ l.hourly_rate_cents | money }}/h · {% if l.review_count %}★ {{ '%.1f' % l.avg_rating }} ({{ l.review_count }}){% else %}{{ _('no reviews') }}{% endif %}</div>
       <div class="actions"><a class="btn btn-sm btn-ghost" href="/host/listings/{{ l.id }}/edit">{{ _('Edit') }}</a><a class="btn btn-sm btn-ghost" href="/host/listings/{{ l.id }}/calendar">{{ _('Calendar & pricing') }}</a></div>
     </div>
