@@ -67,7 +67,7 @@ def _window_from_query(date_: str, start: str, end_date: str, end: str) -> tuple
 @router.get("/", response_class=HTMLResponse)
 def home(request: Request, conn: sqlite3.Connection = Depends(db), u: dict | None = Depends(user)):
     booking_svc.complete_past(conn)
-    featured = rows(conn, LISTING_CARD_SQL + " WHERE l.status = 'active' ORDER BY review_count DESC, avg_rating DESC LIMIT 8")
+    featured = rows(conn, LISTING_CARD_SQL + " WHERE l.status = 'active' ORDER BY l.city = 'Mérida' DESC, l.id")
     cities = rows(conn, "SELECT city, COUNT(*) AS n FROM listings WHERE status = 'active' GROUP BY city ORDER BY n DESC LIMIT 6")
     q = {"city": "", "capacity": "", "bedrooms": "", **default_window()}
     return render(request, "home.html", {"user": u, "featured": featured, "cities": cities, "q": q, "auto_window": True,
@@ -83,16 +83,18 @@ def search(
     booking_svc.complete_past(conn)
     bedrooms, capacity, max_rate, min_rate, instant = (_int(bedrooms, -1), _int(capacity, 0), _int(max_rate, 0), _int(min_rate, 0), _int(instant, 0))
     amenities = [a for a in request.query_params.getlist("amenity") if a in AMENITIES]
-    if not date and not start and not end:
+    explicit_window = bool(date and start and end)
+    if not date and not start and not end:   # prefill the form, but list everything until a window is submitted
         d = default_window()
         date, start, end_date, end = d["date"], d["start"], d["end_date"], d["end"]
-    checkin, checkout = _window_from_query(date, start, end_date, end)
+    checkin, checkout = _window_from_query(date, start, end_date, end) if explicit_window else ("", "")
     results = search_listings(conn, city=city, bedrooms=bedrooms, capacity=capacity, max_rate_cents=max_rate * 100, min_rate_cents=min_rate * 100,
                               checkin=checkin, checkout=checkout, amenities=amenities, instant_only=bool(instant), sort=sort,
                               user_id=u["id"] if u else None)
     q = {"city": city, "bedrooms": bedrooms if bedrooms >= 0 else "", "capacity": capacity or "", "max_rate": max_rate or "", "min_rate": min_rate or "",
          "date": date, "start": start, "end_date": end_date or date, "end": end, "instant": instant or "", "sort": sort if sort != "recommended" else ""}
-    return render(request, "search.html", {"user": u, "results": results, "q": q, "today": default_window()["date"],
+    q_links = {**q, "date": date if explicit_window else "", "start": start if explicit_window else "", "end_date": end_date if explicit_window else "", "end": end if explicit_window else ""}
+    return render(request, "search.html", {"user": u, "results": results, "q": q, "q_links": q_links, "today": default_window()["date"],
                                            "checkin": checkin, "checkout": checkout, "amenities": amenities})
 
 

@@ -32,6 +32,11 @@ def test_search_hides_busy_listings(client):
     assert r.status_code == 201, r.text
     r = client.get("/api/listings", params={"checkin": f"{D}T11:00", "checkout": f"{D}T13:00"})
     assert [l["id"] for l in r.json()["results"]] == [2]
+    # Page: no window submitted -> everything listed; explicit window -> filtered.
+    html = client.get("/search").text
+    assert "Studio</h3>" in html and "Boardroom</h3>" in html
+    html = client.get("/search", params={"date": D, "start": "11:00", "end_date": D, "end": "13:00"}).text
+    assert "Studio</h3>" not in html and "Boardroom</h3>" in html
 
 
 def test_availability_and_quote_api(client):

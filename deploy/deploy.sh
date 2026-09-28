@@ -32,6 +32,8 @@ install -m 644 "$SRC/deploy/nginx-davish.conf" /etc/nginx/sites-available/davish
 ln -sf /etc/nginx/sites-available/davish.conf /etc/nginx/sites-enabled/davish.conf
 nginx -t && systemctl reload nginx
 
-sleep 1
-systemctl --no-pager --lines=0 status davish | sed -n 1,3p
-curl -fsS -o /dev/null -w "app health: HTTP %{http_code}\n" http://127.0.0.1:8100/api/health
+for i in $(seq 1 20); do
+  if curl -fsS -o /dev/null http://127.0.0.1:8100/api/health 2>/dev/null; then echo "app health: HTTP 200 (after ${i}s)"; exit 0; fi
+  sleep 1
+done
+echo "app did not become healthy; last log lines:" >&2; journalctl -u davish --no-pager -n 20 >&2; exit 1

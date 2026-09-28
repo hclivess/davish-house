@@ -37,7 +37,7 @@
 
 {% if featured %}
 <section class="section">
-  <div class="section-head"><h2>{{ _('Top-rated apartments') }}</h2><a href="/search?sort=rating">{{ _('See all') }}</a></div>
+  <div class="section-head"><h2>{{ _('Our apartments') }}</h2><a href="/search">{{ _('See all') }}</a></div>
   <div class="grid">{% for l in featured %}{% include "_card.html" %}{% endfor %}</div>
 </section>
 {% endif %}
