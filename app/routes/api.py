@@ -131,7 +131,7 @@ def api_sync_payment(booking_id: int, conn: sqlite3.Connection = Depends(db), u:
 @router.get("/bookings/{booking_id}")
 def api_booking(booking_id: int, conn: sqlite3.Connection = Depends(db), u: dict = Depends(require_user)):
     b = booking_detail(conn, booking_id)
-    if not b or u["id"] not in (b["guest_id"], b["host_id"]):
+    if not b or (u["id"] not in (b["guest_id"], b["host_id"]) and not u.get("is_admin")):
         raise HTTPException(404, "Booking not found")
     return b
 

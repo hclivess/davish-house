@@ -1,6 +1,6 @@
 """Import Davish's House apartments from the original static site into the platform.
 
-    python import_davish.py --site /path/to/davish-house --host-email alejandro@davish.pro [--host-password ...]
+    python import_davish.py --site /path/to/davish-house --host-email siempredavish@gmail.com [--host-password ...]
 
 Idempotent: listings are matched by title, photos by source file. Creates the host account if missing.
 Prices are MXN from the June 2026 price list: 4-hour price -> hourly rate (price/4, 4h minimum), day price -> daily cap,
@@ -68,7 +68,7 @@ def load_texts(site_dir: str) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--site", required=True, help="path to the davish-house repo checkout")
-    ap.add_argument("--host-email", default="alejandro@davish.pro")
+    ap.add_argument("--host-email", default="siempredavish@gmail.com")
     ap.add_argument("--host-password", default=None)
     args = ap.parse_args()
     init_db()
