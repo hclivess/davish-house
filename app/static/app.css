@@ -248,3 +248,7 @@ select { accent-color: var(--gold); } option { background: #1a1a1a; color: #eee;
 input[type=date], input[type=time], input[type=datetime-local], input[type=number], input[type=file] { accent-color: var(--gold); }
 input[type=file]::file-selector-button { background: transparent; color: var(--gold); border: 1px solid var(--gold); border-radius: 50px; padding: 6px 14px; font-weight: 600; cursor: pointer; margin-right: 10px; }
 input[type=file]::file-selector-button:hover { background: var(--gold); color: #111; }
+/* How it works: number badge + title on one line, evenly spaced */
+.how-grid > div > .num { vertical-align: middle; margin: 0 12px 0 0; width: 36px; height: 36px; font-size: 1rem; }
+.how-grid > div > strong { display: inline-block; vertical-align: middle; font-size: 1.05rem; line-height: 36px; }
+.how-grid > div > p { margin-top: 10px; }
