@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Log in') }}{% endblock %}
+{% block content %}
+<div class="auth">
+  <h1>{{ _('Welcome back') }}</h1>
+  {% if error %}<div class="alert alert-error">{{ error }}</div>{% endif %}
+  <form method="post" action="/login">
+    <input type="hidden" name="next" value="{{ next }}">
+    <label class="field"><span>{{ _('Email') }}</span><input type="email" name="email" required autofocus></label>
+    <label class="field"><span>{{ _('Password') }}</span><input type="password" name="password" required></label>
+    <button class="btn btn-block">{{ _('Log in') }}</button>
+  </form>
+  <p class="muted">{{ _('New here?') }} <a href="/signup?next={{ next }}">{{ _('Create an account') }}</a></p>
+  <p class="muted small"><a href="/forgot">{{ _('Forgot your password?') }}</a></p>
+</div>
+{% endblock %}

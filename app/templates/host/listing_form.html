@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Edit apartment') if l else _('New listing') }}{% endblock %}
+{% block content %}
+<h1>{{ _('Edit apartment') if l else _('List your apartment') }}</h1>
+{% if error %}<div class="alert alert-error">{{ error }}</div>{% endif %}
+<form method="post" class="form-cols" enctype="multipart/form-data">
+  <section>
+    <h2>{{ _('Basics') }}</h2>
+    <label class="field"><span>{{ _('Title') }}</span><input name="title" required maxlength="120" value="{{ l.title if l }}"></label>
+    <div class="two">
+      <label class="field"><span>{{ _('Bedrooms') }}</span><select name="bedrooms">{% for k, c in SIZES.items() %}<option value="{{ k }}" {{ 'selected' if (l.bedrooms if l else 1) == k }}>{{ _(c.label) }}</option>{% endfor %}</select></label>
+      <label class="field"><span>{{ _('Bathrooms') }}</span><input type="number" step="0.5" min="0.5" name="bathrooms" value="{{ '%g' % l.bathrooms if l else 1 }}"></label>
+    </div>
+    <div class="two">
+      <label class="field"><span>{{ _('Beds') }}</span><input type="number" min="0" name="beds" value="{{ l.beds if l else 1 }}"></label>
+      <label class="field"><span>{{ _('Guests (max)') }}</span><input type="number" min="1" name="capacity" value="{{ l.capacity if l else 2 }}"></label>
+    </div>
+    <div class="two">
+      <label class="field"><span>{{ _('Size (m²)') }}</span><input type="number" min="1" name="size_m2" value="{{ l.size_m2 if l and l.size_m2 }}"></label>
+      <label class="field"><span>{{ _('Floor') }}</span><input name="floor" value="{{ l.floor if l }}" placeholder="3, {{ _('ground') }}…"></label>
+    </div>
+    <label class="field"><span>{{ _('Description') }}</span><textarea name="description" rows="6" placeholder="{{ _('What makes it great, what is nearby, what a guest should know.') }}">{{ l.description if l }}</textarea></label>
+    <div class="two"><label class="field"><span>{{ _('City') }}</span><input name="city" required value="{{ l.city if l }}"></label><label class="field"><span>{{ _('Neighborhood') }}</span><input name="neighborhood" value="{{ l.neighborhood if l }}"></label></div>
+    <label class="field"><span>{{ _('Street address (shared after booking)') }}</span><input name="address" value="{{ l.address if l }}"></label>
+    <label class="field"><span>{{ _('Check-in instructions (shared after booking)') }}</span><textarea name="checkin_instructions" rows="3" placeholder="{{ _('Door code, key box, floor, parking…') }}">{{ l.checkin_instructions if l }}</textarea></label>
+    <label class="field"><span>{{ _('House rules') }}</span><textarea name="house_rules" rows="3" placeholder="{{ _('No smoking, no parties, quiet after 22:00…') }}">{{ l.house_rules if l }}</textarea></label>
+    <label class="field"><span>{{ _('Timezone of the apartment') }}</span><select name="timezone">{% for tz in timezones %}<option value="{{ tz }}" {{ 'selected' if (l.timezone if l else default_tz) == tz }}>{{ tz }}</option>{% endfor %}</select></label>
+    <h2>{{ _('Amenities') }}</h2>
+    <div class="amenity-grid">{% for a in AMENITIES %}<label class="check"><input type="checkbox" name="amenities" value="{{ a }}" {{ 'checked' if a in selected_amenities }}> {{ _(a) }}</label>{% endfor %}</div>
+    <h2 id="photos">{{ _('Photos') }}</h2>
+    {% if l and l.photo_rows %}
+    <div class="photo-grid">{% for p in l.photo_rows %}<div class="photo-tile"><img src="{{ p.url }}" alt="">{% if loop.first %}<span class="chip">{{ _('Cover') }}</span>{% endif %}
+      <div class="photo-actions">{% if not loop.first %}<button class="btn btn-sm btn-ghost" formaction="/host/listings/{{ l.id }}/photos/{{ p.id }}/cover" formmethod="post" formnovalidate>{{ _('Make cover') }}</button>{% endif %}<button class="btn btn-sm btn-ghost" formaction="/host/listings/{{ l.id }}/photos/{{ p.id }}/delete" formmethod="post" formnovalidate>{{ _('Remove') }}</button></div></div>{% endfor %}</div>
+    {% endif %}
+    <label class="field"><span>{{ _('Add photos') }} ({{ _('up to') }} {{ max_photos }}, JPG/PNG/WebP/HEIC)</span><input type="file" name="photos" accept="image/*" multiple></label>
+  </section>
+  <section>
+    <h2>{{ _('Pricing') }}</h2>
+    <div class="two">
+      <label class="field"><span>{{ _('Hourly rate ($)') }}</span><input type="number" step="0.01" min="1" name="hourly_rate" required value="{{ '%.2f' % (l.hourly_rate_cents / 100) if l else '' }}"></label>
+      <label class="field"><span>{{ _('Daily rate ($, optional)') }}</span><input type="number" step="0.01" min="0" name="daily_rate" value="{{ '%.2f' % (l.daily_rate_cents / 100) if l and l.daily_rate_cents else '' }}" placeholder="{{ _('cap per 24h') }}"></label>
+    </div>
+    <div class="two">
+      <label class="field"><span>{{ _('Friday & Saturday hourly rate ($, optional)') }}</span><input type="number" step="0.01" min="0" name="weekend_hourly_rate" value="{{ '%.2f' % (l.weekend_hourly_rate_cents / 100) if l and l.weekend_hourly_rate_cents else '' }}"></label>
+      <label class="field"><span>{{ _('Long-stay discount (%, from 7 days)') }}</span><input type="number" min="0" max="90" name="long_stay_discount_pct" value="{{ l.long_stay_discount_pct if l else 0 }}"></label>
+    </div>
+    <div class="two">
+      <label class="field"><span>{{ _('Monthly rate ($, optional)') }}</span><input type="number" step="0.01" min="0" name="monthly_rate" value="{{ '%.2f' % (l.monthly_rate_cents / 100) if l and l.monthly_rate_cents else '' }}" placeholder="{{ _('cap per 30 days') }}"></label>
+      <label class="field"><span>{{ _('Cleaning fee ($)') }}</span><input type="number" step="0.01" min="0" name="cleaning_fee" value="{{ '%.2f' % (l.cleaning_fee_cents / 100) if l else '0' }}"></label>
+    </div>
+    <div class="two">
+      <label class="field"><span>{{ _('Guests included in the price') }}</span><input type="number" min="0" name="included_guests" value="{{ l.included_guests if l else 0 }}" placeholder="0 = {{ _('all') }}"></label>
+      <label class="field"><span>{{ _('Extra guest fee ($, per day)') }}</span><input type="number" step="0.01" min="0" name="extra_guest_fee" value="{{ '%.2f' % (l.extra_guest_fee_cents / 100) if l and l.extra_guest_fee_cents else '' }}"></label>
+    </div>
+    <p class="muted small">{{ _('Seasonal and per-hour price rules are managed from the calendar after publishing.') }}</p>
+
+    <h2>{{ _('Availability rules') }}</h2>
+    <div class="two">
+      <label class="field"><span>{{ _('Minimum stay (hours)') }}</span><input type="number" step="1" min="1" name="min_hours" value="{{ '%g' % l.min_hours if l else 2 }}"></label>
+      <label class="field"><span>{{ _('Maximum stay (hours)') }}</span><input type="number" step="1" min="1" name="max_hours" value="{{ '%g' % l.max_hours if l else 720 }}"></label>
+    </div>
+    <div class="two">
+      <label class="field"><span>{{ _('Check-in from') }}</span><select name="checkin_from">{% for h in hours %}<option {{ 'selected' if (l.checkin_from if l else '00:00') == h }}>{{ h }}</option>{% endfor %}</select></label>
+      <label class="field"><span>{{ _('Check-in until') }}</span><select name="checkin_until">{% for h in hours %}<option {{ 'selected' if (l.checkin_until if l else '24:00') == h }}>{{ h }}</option>{% endfor %}</select></label>
+    </div>
+    <div class="two">
+      <label class="field"><span>{{ _('Check-out from') }}</span><select name="checkout_from">{% for h in hours %}<option {{ 'selected' if (l.checkout_from if l else '00:00') == h }}>{{ h }}</option>{% endfor %}</select></label>
+      <label class="field"><span>{{ _('Check-out until') }}</span><select name="checkout_until">{% for h in hours %}<option {{ 'selected' if (l.checkout_until if l else '24:00') == h }}>{{ h }}</option>{% endfor %}</select></label>
+    </div>
+    <div class="two">
+      <label class="field"><span>{{ _('Cleaning buffer (min)') }}</span><select name="buffer_minutes">{% for m in [0, 30, 60, 90, 120, 180, 240] %}<option value="{{ m }}" {{ 'selected' if (l.buffer_minutes if l else 60) == m }}>{{ m }}</option>{% endfor %}</select></label>
+      <label class="field"><span>{{ _('Advance notice (hours)') }}</span><input type="number" min="0" name="advance_notice_hours" value="{{ l.advance_notice_hours if l else 2 }}"></label>
+    </div>
+    <div class="two">
+      <label class="field"><span>{{ _('Booking window (days ahead)') }}</span><input type="number" min="1" max="730" name="max_advance_days" value="{{ l.max_advance_days if l else 365 }}"></label>
+      <label class="field"><span>{{ _('Cancellation policy') }}</span><select name="cancellation_policy">{% for p in ['flexible', 'two_days', 'moderate', 'strict'] %}<option value="{{ p }}" {{ 'selected' if (l.cancellation_policy if l else 'flexible') == p }}>{{ _(p) }} — {{ _('policy_' + p) }}</option>{% endfor %}</select></label>
+    </div>
+    <label class="check"><input type="checkbox" name="instant_book" value="1" {{ 'checked' if (l.instant_book if l else 1) }}> {{ _('Instant booking (otherwise you approve each request)') }}</label>
+    {% if l %}<label class="field"><span>{{ _('Status') }}</span><select name="status"><option value="active" {{ 'selected' if l.status == 'active' }}>{{ _('Active') }}</option><option value="paused" {{ 'selected' if l.status == 'paused' }}>{{ _('Paused') }}</option></select></label>{% endif %}
+    <button class="btn btn-block">{{ _('Save changes') if l else _('Publish listing') }}</button>
+    {% if l %}<p class="center small"><a href="/host/listings/{{ l.id }}/calendar">{{ _('Manage calendar, blocked time and price rules') }} →</a></p>{% endif %}
+  </section>
+</form>
+{% endblock %}

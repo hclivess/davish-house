@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Sign up') }}{% endblock %}
+{% block content %}
+<div class="auth">
+  <h1>{{ _('Start hosting') if host else _('Create your account') }}</h1>
+  {% if error %}<div class="alert alert-error">{{ error }}</div>{% endif %}
+  <form method="post" action="/signup">
+    <input type="hidden" name="next" value="{{ next }}">
+    <label class="field"><span>{{ _('Name') }}</span><input name="name" required autofocus></label>
+    <label class="field"><span>{{ _('Email') }}</span><input type="email" name="email" required></label>
+    <label class="field"><span>{{ _('Password') }}</span><input type="password" name="password" minlength="8" required></label>
+    <label class="check"><input type="checkbox" name="is_host" value="1" {{ 'checked' if host }}> {{ _('I want to list a space') }}</label>
+    <button class="btn btn-block">{{ _('Sign up') }}</button>
+  </form>
+  <p class="muted">{{ _('Already have an account?') }} <a href="/login?next={{ next }}">{{ _('Log in') }}</a></p>
+</div>
+{% endblock %}

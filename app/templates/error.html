@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Oops') }}{% endblock %}
+{% block content %}
+<div class="empty"><h1>{{ _("Something's off") }}</h1><p>{{ message }}</p>
+{% if action %}<form method="post" action="{{ action[1] }}"><button class="btn">{{ _(action[0]) }}</button></form>{% elif link %}<a class="btn" href="{{ link[1] }}">{{ _(link[0]) }}</a>{% else %}<a class="btn btn-ghost" href="/">{{ _('Back home') }}</a>{% endif %}</div>
+{% endblock %}

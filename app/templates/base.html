@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ SITE_NAME }}{% endblock %} · {{ SITE_NAME }}</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+  <link rel="stylesheet" href="{{ asset('/static/app.css') }}">
+  <meta http-equiv="Cache-Control" content="no-cache">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="/"><img src="/static/img/logo.png" alt="{{ SITE_NAME }}" class="brand-logo"><span class="brand-text">{{ SITE_NAME }}</span></a>
+    <nav class="nav">
+      <a href="/search">{{ _('Explore') }}</a>
+      {% if user %}
+        <a href="/trips">{{ _('Trips') }}</a>
+        <a href="/favorites">{{ _('Saved') }}</a>
+        {% if user.is_host %}<a href="/host">{{ _('Hosting') }}</a>{% else %}<form method="post" action="/host/become" class="inline"><button class="linklike">{{ _('Become a host') }}</button></form>{% endif %}
+        {% if user.is_admin %}<a href="/admin">{{ _('Admin') }}</a>{% endif %}
+        <a class="me" href="/account"><span class="avatar xs" style="background-image:url('{{ user.avatar_url or '/static/avatar.svg' }}')"></span>{{ user.name }}</a>
+        <form method="post" action="/logout" class="inline"><button class="btn btn-ghost btn-sm">{{ _('Log out') }}</button></form>
+      {% else %}
+        <a href="/signup?host=1">{{ _('Become a host') }}</a>
+        <a href="/login">{{ _('Log in') }}</a>
+        <a class="btn btn-sm" href="/signup">{{ _('Sign up') }}</a>
+      {% endif %}
+      <span class="lang-switch" aria-label="{{ _('Language') }}">{% for code, name in LANGUAGES.items() %}<a class="{{ 'active' if code == lang }}" href="{{ request.url.include_query_params(lang=code) }}" hreflang="{{ code }}">{{ code | upper }}</a>{% endfor %}</span>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+  {% block content %}{% endblock %}
+</main>
+<footer class="footer wrap">
+  <span>© 2026 {{ SITE_NAME }} · {{ _('Apartments with hourly precision') }}</span>
+  <span>{% if WHATSAPP %}<a href="https://wa.me/{{ WHATSAPP }}" target="_blank" rel="noopener">💬 {{ _('WhatsApp') }} {{ PHONE }}</a> · {% endif %}<a href="/search">{{ _('Explore') }}</a> · <a href="/signup?host=1">{{ _('List your apartment') }}</a></span>
+</footer>
+{% block scripts %}{% endblock %}
+</body>
+</html>

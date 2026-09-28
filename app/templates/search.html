@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{% if q.city %}{{ _('Apartments in') }} {{ q.city }}{% else %}{{ _('Explore apartments') }}{% endif %}{% endblock %}
+{% block content %}
+{% include "_searchbar.html" %}
+<div class="filters">
+  <a class="pill {{ 'active' if q.bedrooms == '' }}" href="/search?{{ dict(q, bedrooms='') | urlencode }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">{{ _('Any size') }}</a>
+  {% for key, c in SIZES.items() %}<a class="pill {{ 'active' if q.bedrooms == key }}" href="/search?{{ dict(q, bedrooms=key) | urlencode }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">{{ c.icon }} {{ _(c.label) }}</a>{% endfor %}
+  <a class="pill {{ 'active' if q.instant }}" href="/search?{{ dict(q, instant='' if q.instant else 1) | urlencode }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">⚡ {{ _('Instant booking') }}</a>
+  <details class="dropdown"><summary class="pill {{ 'active' if amenities }}">{{ _('Amenities') }}{% if amenities %} ({{ amenities | length }}){% endif %}</summary>
+    <form method="get" action="/search" class="dropdown-body">
+      {% for k, v in q.items() if v != '' %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endfor %}
+      <div class="amenity-grid">{% for a in AMENITIES %}<label class="check"><input type="checkbox" name="amenity" value="{{ a }}" {{ 'checked' if a in amenities }}> {{ _(a) }}</label>{% endfor %}</div>
+      <button class="btn btn-sm">{{ _('Apply') }}</button>
+    </form>
+  </details>
+  <form method="get" action="/search" class="inline">
+    {% for k, v in q.items() if k not in ('max_rate', 'min_rate', 'sort') and v != '' %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endfor %}
+    {% for a in amenities %}<input type="hidden" name="amenity" value="{{ a }}">{% endfor %}
+    <select name="min_rate" onchange="this.form.submit()"><option value="">{{ _('Min price') }}</option>{% for cap in [10, 20, 30, 50, 75, 100] %}<option value="{{ cap }}" {{ 'selected' if q.min_rate == cap }}>${{ cap }}/h+</option>{% endfor %}</select>
+    <select name="max_rate" onchange="this.form.submit()"><option value="">{{ _('Max price') }}</option>{% for cap in [25, 50, 75, 100, 150, 250] %}<option value="{{ cap }}" {{ 'selected' if q.max_rate == cap }}>{{ _('Up to') }} ${{ cap }}/h</option>{% endfor %}</select>
+    <select name="sort" onchange="this.form.submit()">
+      <option value="">{{ _('Recommended') }}</option>
+      <option value="price_asc" {{ 'selected' if q.sort == 'price_asc' }}>{{ _('Price: low to high') }}</option>
+      <option value="price_desc" {{ 'selected' if q.sort == 'price_desc' }}>{{ _('Price: high to low') }}</option>
+      <option value="rating" {{ 'selected' if q.sort == 'rating' }}>{{ _('Best rated') }}</option>
+      <option value="newest" {{ 'selected' if q.sort == 'newest' }}>{{ _('Newest') }}</option>
+    </select>
+  </form>
+</div>
+<p class="muted">{{ results | length }} {{ _('apartment') if results | length == 1 else _('apartments') }}{% if checkin %} {{ _('available from') }} {{ checkin | fdate }} {{ checkin | ftime }} {{ _('to') }} {{ checkout | fdate }} {{ checkout | ftime }}{% endif %}</p>
+{% if results %}
+<div class="grid">{% for l in results %}{% include "_card.html" %}{% endfor %}</div>
+{% else %}
+<div class="empty"><h3>{{ _('No apartments match yet') }}</h3><p>{{ _('Try a different time window, a nearby city, or fewer filters.') }}</p></div>
+{% endif %}
+{% endblock %}

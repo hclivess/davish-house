@@ -1,0 +1,16 @@
+{% set href = "/listings/" ~ l.id ~ ("?date=" ~ q.date ~ "&start=" ~ q.start ~ "&end_date=" ~ q.end_date ~ "&end=" ~ q.end if q and q.date and q.start else "") %}
+<div class="card">
+  <a class="card-img" href="{{ href }}" style="background-image:url('{{ l.cover_url or '/static/img/placeholder.jpg' }}')">
+    {% if not l.instant_book %}<span class="chip chip-light">{{ _('Request to book') }}</span>{% else %}<span class="chip chip-light">⚡ {{ _('Instant') }}</span>{% endif %}
+  </a>
+  {% if user %}<form method="post" action="/favorites/{{ l.id }}/toggle" class="fav-form"><input type="hidden" name="next" value="{{ request.url.path }}{{ '?' + request.url.query if request.url.query }}"><button class="fav {{ 'on' if l.is_favorite }}" title="{{ _('Save') }}">{{ '♥' if l.is_favorite else '♡' }}</button></form>{% endif %}
+  <a class="card-body" href="{{ href }}">
+    <div class="card-top">
+      <span class="muted small">{{ l.bedrooms | size }} · {{ l.neighborhood or l.city }}</span>
+      {% if l.review_count %}<span class="small">★ {{ '%.1f' % l.avg_rating }} <span class="muted">({{ l.review_count }})</span></span>{% else %}<span class="small muted">{{ _('New') }}</span>{% endif %}
+    </div>
+    <h3>{{ l.title }}</h3>
+    <div class="muted small">{{ l.beds }} {{ _('bed') if l.beds == 1 else _('beds') }} · {{ '%g' % l.bathrooms }} {{ _('bath') }} · {{ _('up to') }} {{ l.capacity }} {{ _('guest') if l.capacity == 1 else _('guests') }} · {{ _('min') }} {{ '%g' % l.min_hours }}h</div>
+    <div class="price"><strong>{{ l | price_label }}</strong>{% if l.daily_rate_cents and l.min_hours < 24 %} <span class="muted small">· {{ l.daily_rate_cents | money }} {{ _('/ day') }}</span>{% endif %}{% if l.monthly_rate_cents %} <span class="muted small">· {{ l.monthly_rate_cents | money }} {{ _('/ month') }}</span>{% endif %}</div>
+  </a>
+</div>

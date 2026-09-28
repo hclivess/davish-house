@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Your trips') }}{% endblock %}
+{% block content %}
+<h1>{{ _('Your bookings') }}</h1>
+{% macro trip_row(t) %}
+<a class="row" href="/bookings/{{ t.id }}">
+  <div class="card-img small-img" style="background-image:url('{{ t.cover_url or '/static/img/placeholder.jpg' }}')"></div>
+  <div class="row-body">
+    <strong>{{ t.listing_title }}</strong>
+    <div class="muted small">{{ t.city }} · {{ t.start_at | fdate }} {{ t.start_at | ftime }} → {{ t.end_at | fdate }} {{ t.end_at | ftime }} · {{ t.hours | duration }}</div>
+  </div>
+  <div class="row-end"><span class="status status-{{ t.status }}">{{ _(t.status) }}</span><div>{{ t.total_cents | money }}</div>{% if t.status == "awaiting_payment" %}<div class="small"><a class="btn btn-sm" href="/bookings/{{ t.id }}/pay">{{ _('Pay now') }}</a></div>{% endif %}{% if t.status == 'completed' and not t.review_id %}<div class="small">{{ _('Review pending') }}</div>{% endif %}</div>
+</a>
+{% endmacro %}
+<h2>{{ _('Upcoming') }}</h2>
+{% for t in upcoming %}{{ trip_row(t) }}{% else %}<div class="empty"><p>{{ _('No upcoming bookings.') }} <a href="/search">{{ _('Find a space') }}</a>.</p></div>{% endfor %}
+<h2>{{ _('Past') }}</h2>
+{% for t in past %}{{ trip_row(t) }}{% else %}<p class="muted">{{ _('Nothing here yet.') }}</p>{% endfor %}
+{% endblock %}

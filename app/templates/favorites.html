@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Saved') }}{% endblock %}
+{% block content %}
+<h1>{{ _('Saved apartments') }}</h1>
+{% if results %}<div class="grid">{% for l in results %}{% include "_card.html" %}{% endfor %}</div>
+{% else %}<div class="empty"><p>{{ _("You haven't saved any apartments yet.") }} <a href="/search">{{ _('Explore') }}</a></p></div>{% endif %}
+{% endblock %}

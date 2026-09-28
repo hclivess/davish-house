@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Booking') }} #{{ b.id }}{% endblock %}
+{% block content %}
+{% if b.status == 'awaiting_payment' %}
+  <div class="alert">{% if payment_cancelled %}{{ _('Payment was not completed.') }} {% endif %}{{ _('Your slot is held for a short time while you pay.') }}
+    {% if not is_host %}<a class="btn btn-sm" href="/bookings/{{ b.id }}/pay">{{ _('Pay') }} {{ b.total_cents | money }} {{ _('now') }}</a>{% endif %}</div>
+{% elif is_new %}
+  <div class="alert alert-ok">{% if b.status == 'confirmed' %}🎉 {{ _("You're booked!") }} {{ b.listing_title }} {{ _('is yours from') }} {{ b.start_at | fdate }} {{ b.start_at | ftime }} {{ _('to') }} {{ b.end_at | fdate }} {{ b.end_at | ftime }}.{% else %}{{ _('Request sent.') }} {{ b.host_name }} {{ _("will respond soon. You won't be charged until it's accepted.") }}{% endif %}</div>
+{% endif %}
+<div class="booking-layout">
+  <div>
+    <h1>{{ b.listing_title }}</h1>
+    <p class="muted">{{ b.bedrooms | size }} · {{ b.city }} · {{ _('Hosted by') }} <a href="/users/{{ b.host_id }}">{{ b.host_name }}</a>{% if is_host %} · {{ _('Guest:') }} <a href="/users/{{ b.guest_id }}">{{ b.guest_name }}</a>{% endif %}</p>
+    <div class="kv">
+      <div><span>{{ _('Status') }}</span><span class="status status-{{ b.status }}">{{ _(b.status) }}</span></div>
+      <div><span>{{ _('Check-in') }}</span><span>{{ b.start_at | fdate }} · {{ b.start_at | ftime }}</span></div>
+      <div><span>{{ _('Check-out') }}</span><span>{{ b.end_at | fdate }} · {{ b.end_at | ftime }}</span></div>
+      <div><span>{{ _('Stay') }}</span><span>{{ b.hours | duration }}</span></div>
+      <div><span>{{ _('Guests') }}</span><span>{{ b.guests }}</span></div>
+      {% if b.status in ('confirmed', 'completed') %}<div><span>{{ _('Address') }}</span><span>{{ b.address or b.city }}</span></div>
+        {% if b.checkin_instructions %}<div><span>{{ _('Check-in instructions') }}</span><span class="prose">{{ b.checkin_instructions }}</span></div>{% endif %}{% endif %}
+      {% if b.house_rules %}<div><span>{{ _('House rules') }}</span><span class="prose">{{ b.house_rules }}</span></div>{% endif %}
+      {% if b.note %}<div><span>{{ _('Note') }}</span><span>{{ b.note }}</span></div>{% endif %}
+      <div><span>{{ _('Cancellation') }}</span><span>{{ _(b.cancellation_policy) }} — {{ _('policy_' + b.cancellation_policy) }}</span></div>
+      <div><span>{{ _('Payment') }}</span><span>{{ _(b.payment_status) }}{% if b.refund_cents %} · {{ b.refund_cents | money }} {{ _('refunded') }}{% endif %}{% if not stripe %} <span class="muted small">{{ _('(simulated: Stripe keys not set)') }}</span>{% endif %}</span></div>
+    </div>
+
+    <div class="actions">
+      {% if is_host and b.status == 'pending' %}
+        <form method="post" action="/bookings/{{ b.id }}/respond" class="inline"><button class="btn" name="action" value="accept">{{ _('Accept request') }}</button> <button class="btn btn-ghost" name="action" value="decline">{{ _('Decline') }}</button></form>
+      {% endif %}
+      {% if b.status in ('awaiting_payment', 'pending', 'confirmed') %}
+        <form method="post" action="/bookings/{{ b.id }}/cancel" class="inline" onsubmit="return confirm('{{ _('Cancel this booking?') }}')"><button class="btn btn-ghost">{{ _('Cancel booking') }}</button></form>
+      {% endif %}
+      {% if not is_host and b.status == 'completed' and not b.review_id %}
+        <details class="review-box"><summary class="btn btn-ghost">{{ _('Leave a review') }}</summary>
+          <form method="post" action="/bookings/{{ b.id }}/review">
+            <label class="field"><span>{{ _('Overall') }}</span><select name="rating">{% for r in [5,4,3,2,1] %}<option value="{{ r }}">{{ '★' * r }}</option>{% endfor %}</select></label>
+            <div class="two">{% for k in ['cleanliness', 'accuracy', 'communication', 'location', 'value'] %}<label class="field"><span>{{ _(k) }}</span><select name="{{ k }}"><option value="0">—</option>{% for r in [5,4,3,2,1] %}<option value="{{ r }}">{{ '★' * r }}</option>{% endfor %}</select></label>{% endfor %}</div>
+            <label class="field"><span>{{ _('Review') }}</span><textarea name="body" rows="3" required></textarea></label>
+            <button class="btn">{{ _('Submit review') }}</button>
+          </form>
+        </details>
+      {% endif %}
+      {% if is_host and b.status == 'completed' and not b.guest_review_id %}
+        <details class="review-box"><summary class="btn btn-ghost">{{ _('Review this guest') }}</summary>
+          <form method="post" action="/bookings/{{ b.id }}/guest-review">
+            <label class="field"><span>{{ _('Rating') }}</span><select name="rating">{% for r in [5,4,3,2,1] %}<option value="{{ r }}">{{ '★' * r }}</option>{% endfor %}</select></label>
+            <label class="field"><span>{{ _('Review') }}</span><textarea name="body" rows="3" required></textarea></label>
+            <button class="btn">{{ _('Submit review') }}</button>
+          </form>
+        </details>
+      {% endif %}
+      <a class="btn btn-ghost" href="/listings/{{ b.listing_id }}">{{ _('View listing') }}</a>
+    </div>
+
+    <section id="messages">
+      <h2>{{ _('Messages') }}</h2>
+      {% for m in b.messages %}<div class="msg {{ 'mine' if m.sender_id == user.id }}"><strong>{{ m.sender_name }}</strong> <span class="muted small">{{ m.created_at | fdate }} {{ m.created_at | ftime }}</span><p>{{ m.body }}</p></div>{% else %}<p class="muted">{{ _('No messages yet.') }}</p>{% endfor %}
+      <form method="post" action="/bookings/{{ b.id }}/messages" class="msg-form"><input name="body" placeholder="{{ _('Write a message…') }}" required><button class="btn">{{ _('Send') }}</button></form>
+    </section>
+  </div>
+  <aside class="receipt">
+    <div class="card-img small-img" style="background-image:url('{{ b.cover_url or '/static/img/placeholder.jpg' }}')"></div>
+    <h3>{{ _('Price breakdown') }}</h3>
+    <div class="quote">
+      <div><span>{{ b.hours | duration }}</span><span>{{ b.subtotal_cents | money }}</span></div>
+      {% if b.extra_guest_cents %}<div><span>{{ _('Extra guests') }}</span><span>{{ b.extra_guest_cents | money }}</span></div>{% endif %}
+      {% if b.cleaning_fee_cents %}<div><span>{{ _('Cleaning fee') }}</span><span>{{ b.cleaning_fee_cents | money }}</span></div>{% endif %}
+      {% if b.service_fee_cents %}<div><span>{{ _('Service fee') }}</span><span>{{ b.service_fee_cents | money }}</span></div>{% endif %}
+      <div class="total"><span>{{ _('Total charged') }}</span><span>{{ b.total_cents | money }}</span></div>
+      {% if is_host %}<div class="total"><span>{{ _('Your payout') }}</span><span>{{ b.host_payout_cents | money }}</span></div>{% endif %}
+    </div>
+    <p class="muted small">{{ _('Booking') }} #{{ b.id }} · {{ _('made') }} {{ b.created_at | fdate }}</p>
+  </aside>
+</div>
+{% endblock %}

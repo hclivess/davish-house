@@ -1,0 +1,24 @@
+<form class="searchbar" method="get" action="/search" {% if auto_window %}data-auto-window="1" data-stay-hours="{{ DEFAULT_STAY_HOURS }}"{% endif %}>
+  <label><span>{{ _('Where') }}</span><input name="city" placeholder="{{ _('City or neighborhood') }}" value="{{ q.city if q else '' }}"></label>
+  <label><span>{{ _('Check-in') }}</span><span class="dt"><input type="date" name="date" min="{{ today }}" value="{{ q.date if q else '' }}"><input type="time" name="start" step="3600" value="{{ q.start if q else '' }}"></span></label>
+  <label><span>{{ _('Check-out') }}</span><span class="dt"><input type="date" name="end_date" min="{{ today }}" value="{{ q.end_date if q else '' }}"><input type="time" name="end" step="3600" value="{{ q.end if q else '' }}"></span></label>
+  <label><span>{{ _('Guests') }}</span><input type="number" name="capacity" min="1" placeholder="{{ _('Any') }}" value="{{ q.capacity if q else '' }}"></label>
+  {% if q %}{% for k in ['bedrooms', 'max_rate', 'min_rate', 'instant', 'sort'] %}{% if q.get(k) != '' and q.get(k) is not none %}<input type="hidden" name="{{ k }}" value="{{ q[k] }}">{% endif %}{% endfor %}{% endif %}
+  {% if amenities %}{% for a in amenities %}<input type="hidden" name="amenity" value="{{ a }}">{% endfor %}{% endif %}
+  <button class="btn" type="submit">{{ _('Search') }}</button>
+</form>
+{% if auto_window %}
+<script>
+// Default window in the visitor's own clock: check-in one hour from now rounded up to the hour, two hours long (may cross midnight).
+(function () {
+  const f = document.querySelector('form[data-auto-window]'); if (!f) return;
+  const pad = n => String(n).padStart(2, '0');
+  const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const now = new Date(); let s = new Date(now.getTime() + 3600000);
+  s.setSeconds(0, 0); if (s.getMinutes()) { s.setMinutes(0); s = new Date(s.getTime() + 3600000); }
+  const e = new Date(s.getTime() + (Number(f.dataset.stayHours) || 4) * 3600000);
+  f.date.value = iso(s); f.date.min = iso(now); f.end_date.value = iso(e); f.end_date.min = iso(now);
+  f.start.value = `${pad(s.getHours())}:00`; f.end.value = `${pad(e.getHours())}:00`;
+})();
+</script>
+{% endif %}

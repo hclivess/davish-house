@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Hosting') }}{% endblock %}
+{% block content %}
+<div class="listing-head"><h1>{{ _('Hosting dashboard') }}</h1><a class="btn" href="/host/listings/new">+ {{ _('New listing') }}</a></div>
+<div class="stats">
+  <div><span class="muted small">{{ _('Earnings') }}</span><strong>{{ stats.earnings_cents | money }}</strong></div>
+  <div><span class="muted small">{{ _('Hours booked') }}</span><strong>{{ '%g' % stats.hours_booked }}</strong></div>
+  <div><span class="muted small">{{ _('Bookings') }}</span><strong>{{ stats.bookings }}</strong></div>
+  <div><span class="muted small">{{ _('Pending requests') }}</span><strong>{{ stats.pending or 0 }}</strong></div>
+</div>
+<h2>{{ _('Your listings') }}</h2>
+{% if listings %}
+<div class="grid">
+  {% for l in listings %}
+  <div class="card">
+    <a class="card-img" href="/listings/{{ l.id }}" style="background-image:url('{{ l.cover_url or '/static/img/placeholder.jpg' }}')">{% if l.status != 'active' %}<span class="chip chip-light">{{ _('Paused') }}</span>{% endif %}</a>
+    <div class="card-body">
+      <h3><a href="/listings/{{ l.id }}">{{ l.title }}</a></h3>
+      <div class="muted small">{{ l.hourly_rate_cents | money }}/h · {% if l.review_count %}★ {{ '%.1f' % l.avg_rating }} ({{ l.review_count }}){% else %}{{ _('no reviews') }}{% endif %}</div>
+      <div class="actions"><a class="btn btn-sm btn-ghost" href="/host/listings/{{ l.id }}/edit">{{ _('Edit') }}</a><a class="btn btn-sm btn-ghost" href="/host/listings/{{ l.id }}/calendar">{{ _('Calendar & pricing') }}</a></div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}<div class="empty"><p>{{ _("You haven't listed anything yet.") }}</p><a class="btn" href="/host/listings/new">{{ _('Create your first listing') }}</a></div>{% endif %}
+<h2>{{ _('Recent bookings') }} <a class="small" href="/host/bookings">{{ _('See all') }}</a></h2>
+{% include "host/_booking_rows.html" %}
+{% endblock %}

@@ -1,0 +1,20 @@
+[Unit]
+Description=Davish's House - apartments with hourly precision
+After=network.target
+
+[Service]
+User=davish
+Group=davish
+WorkingDirectory=/srv/davish
+EnvironmentFile=/etc/davish/env
+ExecStart=/srv/davish/.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8100 --workers 1 --proxy-headers --forwarded-allow-ips 127.0.0.1
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/davish
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

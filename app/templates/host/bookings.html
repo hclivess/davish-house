@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Bookings') }}{% endblock %}
+{% block content %}
+<h1>{{ _('Bookings') }}</h1>
+<div class="filters">{% for s in ['', 'pending', 'confirmed', 'completed', 'cancelled', 'declined', 'awaiting_payment', 'expired'] %}<a class="pill {{ 'active' if status == s }}" href="/host/bookings?status={{ s }}">{{ _(s) if s else _('All') }}</a>{% endfor %}</div>
+{% include "host/_booking_rows.html" %}
+{% endblock %}

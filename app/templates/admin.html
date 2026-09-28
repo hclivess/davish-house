@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Admin') }}{% endblock %}
+{% block content %}
+<h1>{{ _('Admin') }}</h1>
+<div class="filters">{% for t in ['overview', 'users', 'listings', 'bookings'] %}<a class="pill {{ 'active' if tab == t }}" href="/admin?tab={{ t }}">{{ _('tab_' + t) }}</a>{% endfor %}
+  {% if tab != 'overview' %}<form method="get" action="/admin" class="inline"><input type="hidden" name="tab" value="{{ tab }}"><input name="q" value="{{ q }}" placeholder="{{ _('Search') }}…"></form>{% endif %}</div>
+{% if tab == 'overview' %}
+<div class="stats">
+  <div><span class="muted small">{{ _('Users') }}</span><strong>{{ overview.users.n }}</strong><span class="small muted">{{ overview.users.hosts or 0 }} {{ _('hosts') }} · {{ overview.users.banned or 0 }} {{ _('suspended') }}</span></div>
+  <div><span class="muted small">{{ _('Listings') }}</span><strong>{{ overview.listings.n }}</strong><span class="small muted">{{ overview.listings.active or 0 }} {{ _('active') }}</span></div>
+  <div><span class="muted small">{{ _('Bookings') }}</span><strong>{{ overview.bookings.n }}</strong><span class="small muted">{{ overview.bookings.confirmed or 0 }} {{ _('confirmed') }} · {{ overview.bookings.pending or 0 }} {{ _('pending') }}</span></div>
+  <div><span class="muted small">{{ _('Gross volume') }}</span><strong>{{ overview.bookings.gross_cents | money }}</strong><span class="small muted">{{ _('Platform revenue') }}: {{ overview.bookings.platform_cents | money }}</span></div>
+</div>
+{% elif tab == 'users' %}
+<table class="table"><tr><th>ID</th><th>{{ _('Name') }}</th><th>{{ _('Email') }}</th><th>{{ _('Role') }}</th><th>{{ _('Joined') }}</th><th></th></tr>
+{% for x in users %}<tr class="{{ 'muted' if x.is_banned }}"><td>{{ x.id }}</td><td><a href="/users/{{ x.id }}">{{ x.name }}</a></td><td>{{ x.email }}</td><td>{{ _('Admin') if x.is_admin }} {{ _('Host') if x.is_host }} {{ _('suspended') if x.is_banned }}</td><td>{{ x.created_at | fdate }}</td>
+<td>{% if x.id != user.id %}<form method="post" action="/admin/users/{{ x.id }}/ban" class="inline"><input type="hidden" name="banned" value="{{ 0 if x.is_banned else 1 }}"><button class="btn btn-sm btn-ghost">{{ _('Reinstate') if x.is_banned else _('Suspend') }}</button></form>{% endif %}</td></tr>{% endfor %}</table>
+{% elif tab == 'listings' %}
+<table class="table"><tr><th>ID</th><th>{{ _('Title') }}</th><th>{{ _('City') }}</th><th>{{ _('Host') }}</th><th>{{ _('Rate') }}</th><th>{{ _('Status') }}</th><th></th></tr>
+{% for l in listings %}<tr><td>{{ l.id }}</td><td><a href="/listings/{{ l.id }}">{{ l.title }}</a></td><td>{{ l.city }}</td><td><a href="/users/{{ l.host_id }}">{{ l.host_name }}</a></td><td>{{ l.hourly_rate_cents | money }}/h</td><td>{{ _(l.status) }}</td>
+<td><form method="post" action="/admin/listings/{{ l.id }}/status" class="inline"><input type="hidden" name="status" value="{{ 'paused' if l.status == 'active' else 'active' }}"><button class="btn btn-sm btn-ghost">{{ _('Pause') if l.status == 'active' else _('Activate') }}</button></form></td></tr>{% endfor %}</table>
+{% elif tab == 'bookings' %}
+<table class="table"><tr><th>ID</th><th>{{ _('Listing') }}</th><th>{{ _('Guest') }}</th><th>{{ _('Host') }}</th><th>{{ _('Check-in') }}</th><th>{{ _('Total') }}</th><th>{{ _('Status') }}</th><th></th></tr>
+{% for b in bookings %}<tr><td><a href="/bookings/{{ b.id }}">{{ b.id }}</a></td><td>{{ b.listing_title }}</td><td>{{ b.guest_name }}</td><td>{{ b.host_name }}</td><td>{{ b.start_at | fdate }} {{ b.start_at | ftime }}</td><td>{{ b.total_cents | money }}</td><td><span class="status status-{{ b.status }}">{{ _(b.status) }}</span></td>
+<td>{% if b.status in ('pending', 'confirmed', 'awaiting_payment') %}<form method="post" action="/admin/bookings/{{ b.id }}/cancel" class="inline" onsubmit="return confirm('{{ _('Cancel this booking?') }}')"><button class="btn btn-sm btn-ghost">{{ _('Cancel') }}</button></form>{% endif %}</td></tr>{% endfor %}</table>
+{% endif %}
+{% endblock %}

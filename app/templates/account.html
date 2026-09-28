@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Account') }}{% endblock %}
+{% block content %}
+<div class="auth wide">
+  <h1>{{ _('Your account') }}</h1>
+  {% if reset %}<div class="alert alert-ok">{{ _("Password updated. You're logged in.") }}</div>{% endif %}
+  {% if saved %}<div class="alert alert-ok">{{ _('Changes saved.') }}</div>{% endif %}
+  {% if error %}<div class="alert alert-error">{{ error }}</div>{% endif %}
+  <form method="post" action="/account" enctype="multipart/form-data">
+    <div class="profile-head"><div class="avatar big" style="background-image:url('{{ user.avatar_url or '/static/avatar.svg' }}')"></div>
+      <label class="field"><span>{{ _('Profile photo') }}</span><input type="file" name="avatar" accept="image/*"></label></div>
+    <label class="field"><span>{{ _('Name') }}</span><input name="name" value="{{ user.name }}" required></label>
+    <label class="field"><span>{{ _('Email') }}</span><input type="email" name="email" value="{{ user.email }}" required></label>
+    <label class="field"><span>{{ _('Phone') }}</span><input name="phone" value="{{ user.phone }}"></label>
+    <label class="field"><span>{{ _('About you') }}</span><textarea name="bio" rows="3" placeholder="{{ _('Shown on your public profile') }}">{{ user.bio }}</textarea></label>
+    <h2>{{ _('Change password') }}</h2>
+    <label class="field"><span>{{ _('Current password') }}</span><input type="password" name="current_password" autocomplete="current-password"></label>
+    <label class="field"><span>{{ _('New password') }}</span><input type="password" name="new_password" minlength="8" autocomplete="new-password" placeholder="{{ _('Leave blank to keep') }}"></label>
+    <button class="btn btn-block">{{ _('Save changes') }}</button>
+  </form>
+  <p class="muted small">{{ _('Member since') }} {{ user.created_at | fdate }} · {{ _('Host account') if user.is_host else _('Guest account') }} · <a href="/users/{{ user.id }}">{{ _('View public profile') }}</a></p>
+  <details><summary class="muted small">{{ _('Delete account') }}</summary>
+    <form method="post" action="/account/delete" onsubmit="return confirm('{{ _('Delete your account? This cannot be undone.') }}')">
+      <label class="field"><span>{{ _('Confirm with your password') }}</span><input type="password" name="password" required></label>
+      <button class="btn btn-ghost">{{ _('Delete my account') }}</button>
+    </form>
+  </details>
+</div>
+{% endblock %}

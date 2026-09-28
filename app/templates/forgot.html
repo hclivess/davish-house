@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Reset password') }}{% endblock %}
+{% block content %}
+<div class="auth">
+  <h1>{{ _('Reset your password') }}</h1>
+  {% if sent %}
+    <div class="alert alert-ok">{{ _('If an account exists for') }} <strong>{{ email }}</strong>, {{ _("we've emailed a reset link. It expires in 60 minutes.") }}</div>
+    <p class="muted"><a href="/login">{{ _('Back to log in') }}</a></p>
+  {% else %}
+    <p class="muted">{{ _("Enter your email and we'll send you a link to choose a new password.") }}</p>
+    <form method="post" action="/forgot">
+      <label class="field"><span>{{ _('Email') }}</span><input type="email" name="email" required autofocus></label>
+      <button class="btn btn-block">{{ _('Send reset link') }}</button>
+    </form>
+    <p class="muted"><a href="/login">{{ _('Back to log in') }}</a></p>
+  {% endif %}
+</div>
+{% endblock %}

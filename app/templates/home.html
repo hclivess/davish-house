@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Apartments with hourly precision') }}{% endblock %}
+{% block content %}
+<section class="hero" style="background-image:url('/static/img/davish-hero.jpg')">
+  <div class="hero-text">
+    <h1>{{ _('Apartments with hourly precision.') }} {{ _('Stay two hours or two weeks.') }}</h1>
+    <p class="lead">{{ _('Check in and out at any hour and pay only for the time you use.') }}</p>
+  </div>
+</section>
+<div class="hero-search">{% include "_searchbar.html" %}</div>
+
+<section class="section">
+  <div class="section-head"><h2>{{ _('Whatever the moment, there is an apartment for it') }}</h2></div>
+  <div class="tiles">
+    <a class="tile" href="/search"><div class="tile-img" style="background-image:url('/static/img/traveler.jpg')"></div><strong>{{ _('Between flights') }}</strong><small>{{ _('A shower, a nap and a desk, three blocks from the terminal.') }}</small></a>
+    <a class="tile" href="/search"><div class="tile-img" style="background-image:url('/static/img/friends-sunset.jpg')"></div><strong>{{ _('A night out, a place to land') }}</strong><small>{{ _('Book from 23:00 to 11:00 and pay for exactly that.') }}</small></a>
+    <a class="tile" href="/search"><div class="tile-img" style="background-image:url('/static/img/work-table.jpg')"></div><strong>{{ _('A working week') }}</strong><small>{{ _('Check in Monday at 8, out Friday at 19. Daily rates apply automatically.') }}</small></a>
+    <a class="tile" href="/search?bedrooms=3"><div class="tile-img" style="background-image:url('/static/img/balloons.jpg')"></div><strong>{{ _('A celebration') }}</strong><small>{{ _('Big flats by the hour for birthdays, showers and dinners.') }}</small></a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><h2>{{ _('Browse by size') }}</h2><a href="/search">{{ _('Explore') }}</a></div>
+  <div class="tiles tiles-wide">
+    {% for key, c in SIZES.items() %}<a class="tile" href="/search?bedrooms={{ key }}"><div class="tile-img" style="background-image:url('/static/img/size-{{ key }}.jpg')"></div><strong>{{ _(c.label) }}</strong><small>{{ _(c.blurb) }}</small></a>{% endfor %}
+  </div>
+</section>
+
+{% if cities %}
+<section class="section">
+  <div class="section-head"><h2>{{ _('Popular cities') }}</h2></div>
+  <div class="tiles tiles-wide">{% for c in cities %}<a class="tile" href="/search?city={{ c.city }}"><div class="tile-img" style="background-image:url('/static/img/city-{{ loop.index0 % 6 }}.jpg')"></div><strong>{{ c.city }}</strong><small>{{ c.n }} {{ _('apartment') if c.n == 1 else _('apartments') }}</small></a>{% endfor %}</div>
+</section>
+{% endif %}
+
+{% if featured %}
+<section class="section">
+  <div class="section-head"><h2>{{ _('Top-rated apartments') }}</h2><a href="/search?sort=rating">{{ _('See all') }}</a></div>
+  <div class="grid">{% for l in featured %}{% include "_card.html" %}{% endfor %}</div>
+</section>
+{% endif %}
+
+<section class="section owner">
+  <img src="/static/img/davish-profile.jpg" alt="Alejandro Davish" class="owner-photo">
+  <div>
+    <h2>Alejandro Davish</h2>
+    <p class="muted">{{ _('Founder & owner') }}</p>
+    <p>{{ _('Furnished, fully equipped apartments in Mérida and on the beach in Chicxulub Puerto. No deposit, no guarantor, no hassle. Every apartment has a Smart TV with Netflix, fast Wi-Fi, air conditioning, pool and parking.') }}</p>
+    {% if WHATSAPP %}<a class="btn btn-ghost" href="https://wa.me/{{ WHATSAPP }}" target="_blank" rel="noopener">💬 {{ _('Chat on WhatsApp') }}</a>{% endif %}
+  </div>
+</section>
+
+<section class="how">
+  <h2>{{ _('How it works') }}</h2>
+  <div class="how-grid">
+    <div><span class="num">1</span><strong>{{ _('Search by time') }}</strong><p>{{ _('Tell us where, from when and until when. We only show apartments that are free for your whole stay.') }}</p></div>
+    <div><span class="num">2</span><strong>{{ _('Pay for the hours you use') }}</strong><p>{{ _('Prices are per hour, with daily rates applied automatically on longer stays. No nightly minimums, no fixed check-in times.') }}</p></div>
+    <div><span class="num">3</span><strong>{{ _('Book and go') }}</strong><p>{{ _('Instant confirmation on most apartments. Hosts get automatic cleaning buffers between stays.') }}</p></div>
+  </div>
+</section>
+
+<section class="host-cta" style="background-image:url('/static/img/host-wide.jpg')">
+  <div class="host-cta-card">
+    <h2>{{ _('Your apartment earns while you are out') }}</h2>
+    <p>{{ _('List it once, set your hourly and daily rates, block the hours you need, and let guests book the rest. Cleaning buffers, calendar rules and payouts are handled for you.') }}</p>
+    <a class="btn btn-lg" href="/signup?host=1">{{ _('Start hosting') }}</a>
+  </div>
+</section>
+{% endblock %}

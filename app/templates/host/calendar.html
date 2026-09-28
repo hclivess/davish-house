@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Calendar') }} · {{ l.title }}{% endblock %}
+{% block content %}
+<div class="listing-head"><div><h1>{{ l.title }}</h1><p class="muted">{{ _('Calendar & pricing') }} · {{ _('base rate') }} {{ l.hourly_rate_cents | money }}/h{% if l.daily_rate_cents %} · {{ l.daily_rate_cents | money }}/{{ _('day') }}{% endif %}</p></div>
+  <div class="actions"><a class="btn btn-ghost" href="?month={{ prev_month }}">← {{ _('Prev') }}</a><strong>{{ _(first.strftime('%b') if first.strftime('%b') != 'Mar' else 'Mar_') }} {{ first.year }}</strong><a class="btn btn-ghost" href="?month={{ next_month }}">{{ _('Next') }} →</a><a class="btn btn-ghost" href="/host/listings/{{ l.id }}/edit">{{ _('Edit') }}</a><a class="btn btn-ghost" href="/listings/{{ l.id }}">{{ _('View') }}</a></div></div>
+{% if request.query_params.get('err') %}<div class="alert alert-error">{{ _('Check the rule fields: dates, rate and hour range.') }}</div>{% endif %}
+<div class="legend"><span class="lg free"></span>{{ _('Free') }} <span class="lg partial"></span>{{ _('Partially booked') }} <span class="lg busy"></span>{{ _('Fully booked / blocked') }}</div>
+<div class="month">
+  {% for d in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] %}<div class="dow">{{ _(d) }}</div>{% endfor %}
+  {% for d in days %}
+  <div class="mday {{ d.state }} {{ 'out' if not d.in_month }} {{ 'today' if d.is_today }} {{ 'past' if d.past }}">
+    <div class="md-top"><span class="md-num">{{ d.date.day }}</span><span class="md-price">${{ (d.rate / 100) | round | int }}/h</span></div>
+    <div class="md-free small muted">{{ d.free_hours }}h {{ _('free') }}</div>
+    {% for b in d.bookings %}<a class="cal-booking status-{{ b.status }}" href="/bookings/{{ b.id }}" title="{{ b.guest_name }}">{{ b.start_at | ftime if b.start_at[:10] == d.date.isoformat() else '…' }}–{{ b.end_at | ftime if b.end_at[:10] == d.date.isoformat() else '…' }} {{ b.guest_name.split(' ')[0] }}</a>{% endfor %}
+    {% for b in d.blocks %}<span class="cal-block" title="{{ b.reason }}">⛔ {{ b.start_at | ftime if b.start_at[:10] == d.date.isoformat() else '…' }}–{{ b.end_at | ftime if b.end_at[:10] == d.date.isoformat() else '…' }}</span>{% endfor %}
+  </div>
+  {% endfor %}
+</div>
+
+<div class="form-cols">
+<section id="rules">
+  <h2>{{ _('Price rules') }}</h2>
+  <p class="muted small">{{ _('Override the hourly rate for a date range, optionally only on certain weekdays or hours of the day (e.g. nights, weekends, high season). The newest matching rule wins.') }}</p>
+  {% for r in rules %}
+  <div class="row"><div class="row-body"><strong>{{ r.label or _('Rule') }}</strong> · {{ r.start_date }} → {{ r.end_date }}{% if r.weekdays != '0123456' %} · {% for wd in r.weekdays %}{{ _(WEEKDAYS[wd | int][:3]) }}{{ ' ' }}{% endfor %}{% endif %}{% if r.hour_from or r.hour_until != 24 %} · {{ '%02d:00' % r.hour_from }}–{{ '%02d:00' % r.hour_until }}{% endif %}
+    <div class="muted small">{{ r.hourly_rate_cents | money }}/h{% if r.daily_rate_cents %} · {{ r.daily_rate_cents | money }}/{{ _('day') }}{% endif %}</div></div>
+    <form method="post" action="/host/listings/{{ l.id }}/price-rules/{{ r.id }}/delete" class="inline"><button class="btn btn-sm btn-ghost">{{ _('Remove') }}</button></form></div>
+  {% else %}<p class="muted">{{ _('No price rules yet. The base rate applies everywhere.') }}</p>{% endfor %}
+  <form method="post" action="/host/listings/{{ l.id }}/price-rules" class="rule-form">
+    <label class="field"><span>{{ _('Label') }}</span><input name="label" placeholder="{{ _('High season, Nights, Weekends…') }}"></label>
+    <div class="two"><label class="field"><span>{{ _('From date') }}</span><input type="date" name="start_date" required></label><label class="field"><span>{{ _('To date') }}</span><input type="date" name="end_date" required></label></div>
+    <div class="two"><label class="field"><span>{{ _('Hourly rate ($)') }}</span><input type="number" step="0.01" min="0.5" name="hourly_rate" required></label><label class="field"><span>{{ _('Daily rate ($, optional)') }}</span><input type="number" step="0.01" min="0" name="daily_rate"></label></div>
+    <div class="two"><label class="field"><span>{{ _('Hours from') }}</span><select name="hour_from">{% for h in hours[:-1] %}<option value="{{ h }}">{{ '%02d:00' % h }}</option>{% endfor %}</select></label><label class="field"><span>{{ _('Hours until') }}</span><select name="hour_until">{% for h in hours[1:] %}<option value="{{ h }}" {{ 'selected' if h == 24 }}>{{ '%02d:00' % h }}</option>{% endfor %}</select></label></div>
+    <div class="weekday-picks">{% for d in range(7) %}<label class="check"><input type="checkbox" name="weekday" value="{{ d }}" checked> {{ _(WEEKDAYS[d][:3]) }}</label>{% endfor %}</div>
+    <button class="btn">{{ _('Add price rule') }}</button>
+  </form>
+</section>
+<section id="blocks">
+  <h2>{{ _('Blocked time') }}</h2>
+  <p class="muted small">{{ _('Block hours for maintenance or private use. Guests can\'t book overlapping times.') }}</p>
+  {% for b in blocks %}
+  <div class="row"><div class="row-body">{{ b.start_at | fdate }} {{ b.start_at | ftime }} → {{ b.end_at | fdate }} {{ b.end_at | ftime }}{% if b.reason %} · <span class="muted">{{ b.reason }}</span>{% endif %}</div>
+    <form method="post" action="/host/listings/{{ l.id }}/blocks/{{ b.id }}/delete" class="inline"><button class="btn btn-sm btn-ghost">{{ _('Remove') }}</button></form></div>
+  {% else %}<p class="muted">{{ _('No upcoming blocks.') }}</p>{% endfor %}
+  <form method="post" action="/host/listings/{{ l.id }}/blocks" class="rule-form">
+    <div class="two"><label class="field"><span>{{ _('From') }}</span><input type="datetime-local" name="start_at" step="3600" required></label><label class="field"><span>{{ _('To') }}</span><input type="datetime-local" name="end_at" step="3600" required></label></div>
+    <label class="field"><span>{{ _('Reason (optional)') }}</span><input name="reason"></label>
+    <button class="btn">{{ _('Add block') }}</button>
+  </form>
+</section>
+</div>
+{% endblock %}

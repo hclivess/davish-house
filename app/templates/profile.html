@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ p.name }}{% endblock %}
+{% block content %}
+<div class="profile-head">
+  <div class="avatar big" style="background-image:url('{{ p.avatar_url or '/static/avatar.svg' }}')"></div>
+  <div>
+    <h1>{{ p.name }}</h1>
+    <p class="muted">{{ _('Member since') }} {{ p.created_at | fdate }}{% if p.is_host %} · {{ _('Host') }}{% if p.host_review_count %} · ★ {{ '%.1f' % p.host_avg_rating }} ({{ p.host_review_count }} {{ _('reviews') }}){% endif %}{% endif %}</p>
+    {% if p.bio %}<p class="prose">{{ p.bio }}</p>{% endif %}
+  </div>
+</div>
+{% if p.listings %}<h2>{{ _('Listings') }}</h2><div class="grid">{% for l in p.listings %}{% include "_card.html" %}{% endfor %}</div>{% endif %}
+{% if p.reviews_received %}
+<h2>{{ _('Reviews as a host') }}</h2>
+{% for r in p.reviews_received %}<div class="review"><div><strong>{{ r.author_name }}</strong> <span class="muted small">· {{ r.listing_title }} · {{ r.created_at | fdate }}</span> <span class="stars">{{ '★' * r.rating }}{{ '☆' * (5 - r.rating) }}</span></div><p>{{ r.body }}</p></div>{% endfor %}
+{% endif %}
+{% if p.guest_reviews %}
+<h2>{{ _('Reviews as a guest') }}</h2>
+{% for r in p.guest_reviews %}<div class="review"><div><strong>{{ r.host_name }}</strong> <span class="muted small">· {{ r.created_at | fdate }}</span> <span class="stars">{{ '★' * r.rating }}{{ '☆' * (5 - r.rating) }}</span></div><p>{{ r.body }}</p></div>{% endfor %}
+{% endif %}
+{% endblock %}

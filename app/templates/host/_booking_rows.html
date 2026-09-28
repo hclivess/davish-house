@@ -1,0 +1,6 @@
+{% for b in bookings %}
+<a class="row" href="/bookings/{{ b.id }}">
+  <div class="row-body"><strong>{{ b.listing_title }}</strong><div class="muted small">{{ b.guest_name }} · {{ b.guests }} {{ _('guests') }} · {{ b.start_at | fdate }} {{ b.start_at | ftime }} → {{ b.end_at | fdate }} {{ b.end_at | ftime }} · {{ b.hours | duration }}</div></div>
+  <div class="row-end"><span class="status status-{{ b.status }}">{{ _(b.status) }}</span><div>{{ b.host_payout_cents | money }}</div></div>
+</a>
+{% else %}<p class="muted">{{ _('No bookings yet.') }}</p>{% endfor %}
