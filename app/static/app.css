@@ -15,7 +15,7 @@ h1 { font-size: 1.75rem; letter-spacing: -.02em; margin: .4rem 0; } h2 { font-si
 .nav { display: flex; align-items: center; gap: 6px; font-weight: 500; font-size: .92rem; flex-wrap: wrap; }
 .nav > a, .nav .linklike { padding: 8px 12px; border-radius: 999px; } .nav > a:hover, .nav .linklike:hover { background: var(--soft); }
 .nav .me { display: inline-flex; align-items: center; gap: 6px; }
-.linklike { background: none; border: 0; font: inherit; cursor: pointer; font-weight: 500; }
+.linklike { background: none; border: 0; font: inherit; color: inherit; cursor: pointer; font-weight: 500; }
 .lang-switch { display: inline-flex; gap: 2px; margin-left: 8px; font-size: .75rem; }
 .lang-switch a { padding: 4px 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); } .lang-switch a.active { color: var(--ink); border-color: var(--ink); font-weight: 700; }
 /* buttons */
