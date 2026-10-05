@@ -16,8 +16,8 @@
   <form method="get" action="/search" class="inline">
     {% for k, v in q_links.items() if k not in ('max_rate', 'min_rate', 'sort') and v != '' %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endfor %}
     {% for a in amenities %}<input type="hidden" name="amenity" value="{{ a }}">{% endfor %}
-    <select name="min_rate" onchange="this.form.submit()"><option value="">{{ _('Min price') }}</option>{% for cap in [10, 20, 30, 50, 75, 100] %}<option value="{{ cap }}" {{ 'selected' if q.min_rate == cap }}>${{ cap }}/h+</option>{% endfor %}</select>
-    <select name="max_rate" onchange="this.form.submit()"><option value="">{{ _('Max price') }}</option>{% for cap in [25, 50, 75, 100, 150, 250] %}<option value="{{ cap }}" {{ 'selected' if q.max_rate == cap }}>{{ _('Up to') }} ${{ cap }}/h</option>{% endfor %}</select>
+    {% set H = DEFAULT_STAY_HOURS %}<select name="min_rate" onchange="this.form.submit()"><option value="">{{ _('Min price') }}</option>{% for cap in [500, 600, 700] %}<option value="{{ cap // H }}" {{ 'selected' if q.min_rate == cap // H }}>{{ (cap * 100) | money_short }}+ {{ CURRENCY }} / {{ H }} h</option>{% endfor %}</select>
+    <select name="max_rate" onchange="this.form.submit()"><option value="">{{ _('Max price') }}</option>{% for cap in [500, 600, 700, 800] %}<option value="{{ cap // H }}" {{ 'selected' if q.max_rate == cap // H }}>{{ _('Up to') }} {{ (cap * 100) | money_short }} {{ CURRENCY }} / {{ H }} h</option>{% endfor %}</select>
     <select name="sort" onchange="this.form.submit()">
       <option value="">{{ _('Recommended') }}</option>
       <option value="price_asc" {{ 'selected' if q.sort == 'price_asc' }}>{{ _('Price: low to high') }}</option>
