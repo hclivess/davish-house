@@ -2,10 +2,10 @@
 
 # Bedroom count -> label. 0 is a studio; 3 means three or more.
 APARTMENT_SIZES = {
-    0: {"label": "Studio", "icon": "🛋️", "blurb": "Compact and private. Rest, shower, work."},
-    1: {"label": "1 bedroom", "icon": "🛏️", "blurb": "A real bedroom plus a living space."},
-    2: {"label": "2 bedrooms", "icon": "🏠", "blurb": "Room for a small group or a family."},
-    3: {"label": "3+ bedrooms", "icon": "🏡", "blurb": "Large flats for gatherings and day events."},
+    0: {"label": "Studio", "icon": "sofa", "blurb": "Compact and private. Rest, shower, work."},
+    1: {"label": "1 bedroom", "icon": "bed", "blurb": "A real bedroom plus a living space."},
+    2: {"label": "2 bedrooms", "icon": "home", "blurb": "Room for a small group or a family."},
+    3: {"label": "3+ bedrooms", "icon": "building", "blurb": "Large flats for gatherings and day events."},
 }
 
 AMENITIES = [

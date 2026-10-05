@@ -258,3 +258,65 @@ input[type=file]::file-selector-button:hover { background: var(--gold); color: #
 .cal-day { cursor: pointer; } .cal-day.busy { cursor: not-allowed; }
 .cal-day.sel { background: rgba(201,168,76,.18); border-color: var(--gold); color: #fff; } .cal-day.sel .cp { color: var(--gold-light); }
 .cal-day.sel-start, .cal-day.sel-end { background: var(--gold); color: #151515; } .cal-day.sel-start .cm, .cal-day.sel-end .cm, .cal-day.sel-start .cp, .cal-day.sel-end .cp { color: #151515; }
+
+/* ===== Polish: type, icons, cards, mobile header ===== */
+:root { --serif: "DM Serif Display", Georgia, "Times New Roman", serif; }
+body { font-family: Inter, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+h1, h2, .section-head h2, .how h2, .host-cta-card h2, .owner h2, .auth h1 { font-family: var(--serif); font-weight: 400; letter-spacing: 0; }
+h1 { font-size: 2rem; line-height: 1.15; }
+.ico { display: inline-block; vertical-align: -.14em; flex: 0 0 auto; }
+/* hero: serif headline instead of wide-tracked caps */
+.hero-text h1 { font-family: var(--serif); text-transform: none; letter-spacing: 0; font-weight: 400; font-size: clamp(2rem, 4.2vw, 3.1rem); line-height: 1.08; margin-bottom: 16px; }
+.hero-text .lead { font-size: 1.12rem; line-height: 1.55; }
+.hero-badges span { display: inline-flex; align-items: center; gap: 6px; background: rgba(17,17,17,.55); backdrop-filter: blur(4px); }
+/* listing cards: equal heights, readable badge, no logo stamped on every photo */
+.grid { align-items: stretch; }
+.card { display: flex; flex-direction: column; }
+.card-img::after { content: none; }
+.card-body { display: flex; flex-direction: column; flex: 1; gap: 2px; }
+.card-body h3 { font-family: var(--serif); font-weight: 400; font-size: 1.35rem; line-height: 1.25; margin: 4px 0 2px; }
+.card-top .muted { text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; }
+.price { margin-top: auto; padding-top: 12px; border-top: 1px solid #2e2e2e; display: flex; flex-direction: column; gap: 2px; }
+.card-body > .muted.small { margin-bottom: 12px; }
+.price strong { color: var(--gold-light); font-size: 1.15rem; } .price-alt { font-size: .8rem; }
+.chip { display: inline-flex; align-items: center; gap: 5px; background: rgba(17,17,17,.78); backdrop-filter: blur(6px); border: 1px solid rgba(201,168,76,.7); color: var(--gold-light); letter-spacing: .02em; }
+.pill { display: inline-flex; align-items: center; gap: 7px; }
+/* cities: wide photo banners with the name on the image */
+.city-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.city-tile { position: relative; display: flex; align-items: flex-end; aspect-ratio: 21/9; border-radius: 14px; overflow: hidden; border: 1px solid #333; background: #222 center/cover no-repeat; transition: border-color .3s, transform .3s; }
+.city-tile::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.8) 0%, rgba(0,0,0,.15) 55%, rgba(0,0,0,0) 100%); }
+.city-tile span { position: relative; padding: 18px 22px; }
+.city-tile strong { display: flex; align-items: center; gap: 8px; font-family: var(--serif); font-weight: 400; font-size: 1.5rem; color: #fff; }
+.city-tile strong .ico { color: var(--gold); font-size: 1.1rem; }
+.city-tile small { color: #ccc; font-size: .9rem; }
+.city-tile:hover { border-color: var(--gold); transform: translateY(-3px); }
+/* WhatsApp buttons: icon + label centred */
+.btn.wa { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.footer a .ico { margin-right: 2px; }
+/* booking quote: per-hour/day lines laid out like the other rows */
+#q-lines { display: block; padding: 0; } #q-lines > div { display: flex; justify-content: space-between; padding: 4px 0; }
+/* listing page title */
+.listing-head h1 { font-size: 2.1rem; }
+@media (max-width: 700px) {
+  /* header: logo and links on one row; secondary links (also in the footer) give way */
+  .topbar-inner { height: 60px; gap: 8px; }
+  .brand-logo { height: 38px; }
+  .nav { flex-wrap: nowrap; gap: 2px; font-size: .85rem; overflow-x: auto; scrollbar-width: none; min-width: 0; }
+  .brand { flex: 0 0 auto; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav > a, .nav .linklike { padding: 7px 9px; white-space: nowrap; }
+  .nav .nav-opt { display: none; }
+  .nav .btn-sm { padding: 6px 12px; white-space: nowrap; }
+  .lang-switch { margin-left: 4px; }
+  .nav .me { font-size: 0; padding: 4px; }   /* avatar only; the name is on the account page */
+  .nav { -webkit-mask-image: linear-gradient(to right, #000 88%, transparent); mask-image: linear-gradient(to right, #000 88%, transparent); padding-right: 18px; }
+  /* hero: text at the bottom over a bottom-up shade, so it doesn't sit on the face */
+  .hero { min-height: 640px; align-items: flex-end; background-size: auto 62%; background-position: 32% top; background-color: #000; }
+  .hero::after { background: linear-gradient(to top, rgba(0,0,0,.92) 0%, rgba(0,0,0,.6) 45%, rgba(0,0,0,.05) 75%); }
+  .hero-text { text-align: left; margin-left: 0; padding: 24px 20px 96px; }
+  .hero-badges { justify-content: flex-start; }
+  h1, .listing-head h1 { font-size: 1.6rem; }
+  .gallery-0, .gallery-1 { grid-auto-rows: 260px; }
+  .city-tile { aspect-ratio: 16/9; }
+  .section { margin-top: 40px; }
+}

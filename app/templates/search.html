@@ -4,8 +4,8 @@
 {% include "_searchbar.html" %}
 <div class="filters">
   <a class="pill {{ 'active' if q.bedrooms == '' }}" href="/search?{{ qs(q_links, bedrooms='') }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">{{ _('Any size') }}</a>
-  {% for key, c in SIZES.items() %}<a class="pill {{ 'active' if q.bedrooms == key }}" href="/search?{{ qs(q_links, bedrooms=key) }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">{{ c.icon }} {{ _(c.label) }}</a>{% endfor %}
-  <a class="pill {{ 'active' if q.instant }}" href="/search?{{ qs(q_links, instant='' if q.instant else 1) }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">⚡ {{ _('Instant booking') }}</a>
+  {% for key, c in SIZES.items() %}<a class="pill {{ 'active' if q.bedrooms == key }}" href="/search?{{ qs(q_links, bedrooms=key) }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">{{ icon(c.icon) }} {{ _(c.label) }}</a>{% endfor %}
+  <a class="pill {{ 'active' if q.instant }}" href="/search?{{ qs(q_links, instant='' if q.instant else 1) }}{% for a in amenities %}&amenity={{ a }}{% endfor %}">{{ icon('bolt') }} {{ _('Instant booking') }}</a>
   <details class="dropdown"><summary class="pill {{ 'active' if amenities }}">{{ _('Amenities') }}{% if amenities %} ({{ amenities | length }}){% endif %}</summary>
     <form method="get" action="/search" class="dropdown-body">
       {% for k, v in q_links.items() if v != '' %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endfor %}

@@ -14,6 +14,7 @@ from . import settings
 from .auth import current_user
 from .availability import format_duration
 from .catalog import AMENITIES, APARTMENT_SIZES, WEEKDAYS, size_label
+from .icons import icon
 from .i18n import LANGUAGES, _, get_lang
 from .db import connect
 from .pricing import money
@@ -75,6 +76,7 @@ templates.env.filters["ftime"] = _fmt_time
 templates.env.filters["fdate"] = _fmt_date
 templates.env.filters["fhhmm"] = _fmt_hhmm
 templates.env.globals["SIZES"] = APARTMENT_SIZES
+templates.env.globals["icon"] = icon
 templates.env.globals["_"] = _
 templates.env.globals["SITE_NAME"] = settings.SITE_NAME
 

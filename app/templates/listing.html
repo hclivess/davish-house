@@ -24,7 +24,7 @@
     <section class="host-row">
       <a class="avatar" href="/users/{{ l.host_id }}" style="background-image:url('{{ l.host_avatar or '/static/avatar.svg' }}')"></a>
       <div><h2>{{ _('Hosted by') }} <a href="/users/{{ l.host_id }}">{{ l.host_name }}</a></h2>
-      <p class="muted">{{ '⚡ ' + _('Instant booking') if l.instant_book else _('Booking requests are reviewed by the host') }} · {{ _('Host since') }} {{ l.host_since | fdate }}</p></div>
+      <p class="muted">{{ icon('bolt') + ' ' + _('Instant booking') if l.instant_book else _('Booking requests are reviewed by the host') }} · {{ _('Host since') }} {{ l.host_since | fdate }}</p></div>
     </section>
     <section>
       <p class="prose">{{ l.description }}</p>
@@ -102,7 +102,7 @@
       {% endif %}
       <p class="muted small center">{{ _('Cancellation') }}: {{ _('policy_' + l.cancellation_policy) }}</p>
     </form>
-    {% if WHATSAPP %}<a class="btn btn-ghost btn-block wa" href="https://wa.me/{{ WHATSAPP }}?text={{ (_('Hola, me interesa') + ' ' + l.title) | urlencode }}" target="_blank" rel="noopener">💬 {{ _('Chat on WhatsApp') }}</a>{% endif %}
+    {% if WHATSAPP %}<a class="btn btn-ghost btn-block wa" href="https://wa.me/{{ WHATSAPP }}?text={{ (_('Hola, me interesa') + ' ' + l.title) | urlencode }}" target="_blank" rel="noopener">{{ icon('chat') }} {{ _('Chat on WhatsApp') }}</a>{% endif %}
     {% endif %}
   </aside>
 </div>

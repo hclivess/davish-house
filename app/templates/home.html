@@ -5,7 +5,7 @@
   <div class="hero-text">
     <h1>{{ _('Apartments with hourly precision.') }} {{ _('Stay two hours or two weeks.') }}</h1>
     <p class="lead">{{ _('Check in and out at any hour and pay only for the time you use.') }}</p>
-    <div class="hero-badges"><span>✓ {{ _('No deposit') }}</span><span>✓ {{ _('No guarantor') }}</span><span>✓ {{ _('Netflix included') }}</span></div>
+    <div class="hero-badges"><span>{{ icon('check') }} {{ _('No deposit') }}</span><span>{{ icon('check') }} {{ _('No guarantor') }}</span><span>{{ icon('check') }} {{ _('Netflix included') }}</span></div>
   </div>
 </section>
 <div class="hero-search">{% include "_searchbar.html" %}</div>
@@ -22,7 +22,7 @@
 {% if cities %}
 <section class="section">
   <div class="section-head"><h2>{{ _('Popular cities') }}</h2></div>
-  <div class="tiles tiles-wide">{% for c in cities %}<a class="tile" href="/search?city={{ c.city }}"><div class="tile-img" style="background-image:url('/static/img/{{ 'depa-chicxulub' if 'Chicxulub' in c.city else 'depa-54' }}.jpg')"></div><strong>{{ c.city }}</strong><small>{{ c.n }} {{ _('apartment') if c.n == 1 else _('apartments') }}</small></a>{% endfor %}</div>
+  <div class="city-tiles">{% for c in cities %}<a class="city-tile" href="/search?city={{ c.city }}" style="background-image:url('/static/img/{{ 'depa-chicxulub' if 'Chicxulub' in c.city else 'depa-54' }}.jpg')"><span><strong>{{ icon('pin') }} {{ c.city }}</strong><small>{{ c.n }} {{ _('apartment') if c.n == 1 else _('apartments') }}</small></span></a>{% endfor %}</div>
 </section>
 {% endif %}
 
@@ -40,7 +40,7 @@
     <h2>Alejandro Davish</h2>
     <p class="muted">{{ _('Founder & owner') }}</p>
     <p>{{ _('Furnished, fully equipped apartments in Mérida and on the beach in Chicxulub Puerto. No deposit, no guarantor, no hassle. Every apartment has a Smart TV with Netflix, fast Wi-Fi, air conditioning, pool and parking.') }}</p>
-    {% if WHATSAPP %}<a class="btn wa" href="https://wa.me/{{ WHATSAPP }}" target="_blank" rel="noopener">💬 {{ _('Chat on WhatsApp') }}</a>{% endif %}
+    {% if WHATSAPP %}<a class="btn wa" href="https://wa.me/{{ WHATSAPP }}" target="_blank" rel="noopener">{{ icon('chat') }} {{ _('Chat on WhatsApp') }}</a>{% endif %}
   </div>
 </section>
 

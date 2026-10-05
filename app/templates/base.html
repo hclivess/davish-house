@@ -6,6 +6,8 @@
   <title>{% block title %}{{ SITE_NAME }}{% endblock %} · {{ SITE_NAME }}</title>
   <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display&display=swap">
   <link rel="stylesheet" href="{{ asset('/static/app.css') }}">
   <meta http-equiv="Cache-Control" content="no-cache">
 </head>
@@ -14,7 +16,7 @@
   <div class="wrap topbar-inner">
     <a class="brand" href="/"><img src="/static/img/logo.png" alt="{{ SITE_NAME }}" class="brand-logo"><span class="brand-text">{{ SITE_NAME }}</span></a>
     <nav class="nav">
-      <a href="/search">{{ _('Explore') }}</a>
+      <a class="nav-opt" href="/search">{{ _('Explore') }}</a>
       {% if user %}
         <a href="/trips">{{ _('Trips') }}</a>
         <a href="/favorites">{{ _('Saved') }}</a>
@@ -23,7 +25,7 @@
         <a class="me" href="/account"><span class="avatar xs" style="background-image:url('{{ user.avatar_url or '/static/avatar.svg' }}')"></span>{{ user.name }}</a>
         <form method="post" action="/logout" class="inline"><button class="btn btn-ghost btn-sm">{{ _('Log out') }}</button></form>
       {% else %}
-        <a href="/signup?host=1">{{ _('Become a host') }}</a>
+        <a class="nav-opt" href="/signup?host=1">{{ _('Become a host') }}</a>
         <a href="/login">{{ _('Log in') }}</a>
         <a class="btn btn-sm" href="/signup">{{ _('Sign up') }}</a>
       {% endif %}
@@ -36,7 +38,7 @@
 </main>
 <footer class="footer wrap">
   <span>© 2026 {{ SITE_NAME }} · {{ _('Apartments with hourly precision') }}</span>
-  <span>{% if WHATSAPP %}<a href="https://wa.me/{{ WHATSAPP }}" target="_blank" rel="noopener">💬 {{ _('WhatsApp') }} {{ PHONE }}</a> · {% endif %}<a href="/search">{{ _('Explore') }}</a> · <a href="/signup?host=1">{{ _('List your apartment') }}</a></span>
+  <span>{% if WHATSAPP %}<a href="https://wa.me/{{ WHATSAPP }}" target="_blank" rel="noopener">{{ icon('chat') }} {{ _('WhatsApp') }} {{ PHONE }}</a> · {% endif %}<a href="/search">{{ _('Explore') }}</a> · <a href="/signup?host=1">{{ _('List your apartment') }}</a></span>
 </footer>
 {% block scripts %}{% endblock %}
 </body>
